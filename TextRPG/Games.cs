@@ -30,6 +30,13 @@ namespace TextRpg01
         public bool PlayeritemCheckout;
         public bool StoreCheckout;
         public bool CaveCheckout;
+        public bool CavetriggChk;
+        public int CavetriggCount = 0;
+        public bool AlrauneHitChk;
+        public bool AlrauneitemChk = false;
+        public bool SeaCheck;
+        public int PlayerSeaWalkCount;
+
 
         // 전투가 끝났는지 확인
         public bool BattleCheck = false;
@@ -60,12 +67,12 @@ namespace TextRpg01
 
         // 플레이어 인벤토리 문자들
         public List<string> Playeritem = new List<string>();
-        // 돈 / 체력포션 / 산 잡몹 / 산 보스 몹 / 동굴 잡몹 / 동굴 보스 몹 /                     0~ 5개
+        // 돈 / 체력포션 / 산 잡몹 / 산 보스 몹 / 동굴 잡몹 / 바다 보스 몹 /                     0~ 5개
         // 전사 무기 1 / 전사 갑옷 1 / 전사 장식 1 / 전사 무기 2 / 전사 갑옷 2 / 전사 장식 2 값    6~11개
         // 마법사 무기 1 / 마법사 갑옷 1 / 마법사 장식 1 / 마법사 무기 2 / 마법사 갑옷 2 / 마법사 장식 2 값    12~17개
         // 도적 무기 1 / 도적 갑옷 1 / 도적 장식 1 / 도적 무기 2 / 도적 갑옷 2 / 도적 장식 2 값    17~22개
 
-        public int[] PlayeritemVal = new int[23];
+        public int[] PlayeritemVal = new int[25];
         public Dictionary<string, string> playeritemsIndex = new Dictionary<string, string>();
 
         // 플레이어 장비 유무
@@ -86,7 +93,7 @@ namespace TextRpg01
             
             GameSet();
 
-            StoreWepSet();
+            
             GamePlay();
         }
 
@@ -180,7 +187,6 @@ namespace TextRpg01
             OccupationCheck = false;
             StatusCheck = false;
 
-
             while (isGameOver == false)
             {
                 while (TitleCheck == false)
@@ -227,24 +233,21 @@ namespace TextRpg01
 
                 if (PlayerOccupation == "전사")
                 {
-                    PlayerBattleVal[1] = (int)(StatusValues[0] + ((StatusValues[2] + StatusValues[4]) / 2));
-                    PlayerBattleVal[2] = (int)(StatusValues[1] + ((StatusValues[3] + StatusValues[5]) / 2));
+                    PlayerBattleVal[1] = (StatusValues[0] + (int)((StatusValues[2] + StatusValues[4]) / 2));
+                    PlayerBattleVal[2] = (StatusValues[1] + (int)((StatusValues[3] + StatusValues[5]) / 2));
                 }
                 else if (PlayerOccupation == "마법사")
                 {
-                    PlayerBattleVal[1] = (int)(StatusValues[2] + ((StatusValues[0] + StatusValues[4]) / 2));
-                    PlayerBattleVal[2] = (int)(StatusValues[3] + ((StatusValues[1] + StatusValues[5]) / 2));
+                    PlayerBattleVal[1] = (StatusValues[2] + (int)((StatusValues[0] + StatusValues[4]) / 2));
+                    PlayerBattleVal[2] = (StatusValues[3] + (int)((StatusValues[1] + StatusValues[5]) / 2));
                 }
                 else if (PlayerOccupation == "도적")
                 {
-                    PlayerBattleVal[1] = (int)(StatusValues[4] + ((StatusValues[0] + StatusValues[2]) / 2));
-                    PlayerBattleVal[2] = (int)(StatusValues[5] + ((StatusValues[1] + StatusValues[3]) / 2));
+                    PlayerBattleVal[1] = (StatusValues[4] + (int)((StatusValues[0] + StatusValues[2]) / 2));
+                    PlayerBattleVal[2] = (StatusValues[5] + (int)((StatusValues[1] + StatusValues[3]) / 2));
                 }
-
-
-
+                else { /* Do Nothing */ }
                 PlayeritemVal[0] = 300;
-
 
                 //마을, 모험, 아이템, 끝내기 선택지
                 ChoiceActSet();
@@ -258,14 +261,81 @@ namespace TextRpg01
 
 
 
+            }
 
+            
 
+            if (isGameOver == true)
+            {
+                GameboardClear();
+                GameEndSet();
+                Console.SetCursorPosition(0, 0);
+                GameEnd();
             }
 
 
         } // GamePlay()
 
+        // 게임 종료 구현 함수
+        public void GameEndSet()
+        {
+            for (int y = 0; y < BOARDY; y++)
+            {
+                for (int x = 0; x < BOARDX; x++)
+                {
+                    gameboard[y, x] = -1;
+                    // 테두리
+                    if (x == 0 || x == 30 || y == 0 || y == 30)
+                    {
+                        gameboard[y, x] = -2;
 
+                    }
+
+
+                    
+                }
+            }
+
+        }
+
+        // 게임 종료 함수
+        public void GameEnd()
+        {
+            for (int y = 0; y < BOARDY; y++)
+            {
+                for (int x = 0; x < BOARDX; x++)
+                {
+                    switch (gameboard[y, x])
+                    {
+
+                        
+                        case -2:
+                            Console.Write("■".PadRight(2, ' '));
+                            break;
+
+                        case -1:
+                            Console.Write(" ".PadLeft(3, ' '));
+                            break;
+
+
+
+                    }
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine();
+
+            Console.SetCursorPosition(29, 8);
+            Console.WriteLine("[게임이 끝났습니다. 수고하셨습니다.]");
+
+            ConsoleKeyInfo Move;
+
+            Console.SetCursorPosition(0, 31);
+
+            Move = Console.ReadKey();
+
+            
+        }
         
 
         // 타이틀 화면 구현 함수
@@ -663,7 +733,7 @@ namespace TextRpg01
                         PlayerWearWeps[0] = "기본용 단검";
                         PlayeritemVal[18]++;
 
-                        PlayerWearWeps[1] = "기본용 복장";
+                        PlayerWearWeps[1] = "기본용 트레이닝 복장";
                         PlayeritemVal[19]++;
 
                         PlayerWearWeps[2] = "기본용 도적의 가호";
@@ -706,13 +776,20 @@ namespace TextRpg01
                             case 3:
                                 PlayerOccupation = "도적";
                                 PlayerWearWeps[0] = "기본용 단검";
-                                PlayerWearWeps[1] = "기본용 복장";
+                                PlayeritemVal[18]++;
+
+                                PlayerWearWeps[1] = "기본용 트레이닝 복장";
+                                PlayeritemVal[19]++;
+
                                 PlayerWearWeps[2] = "기본용 도적의 가호";
+                                PlayeritemVal[20]++;
+
                                 break;
                         }
                         OccupationCheck = true;
 
                     }
+                    StoreWepSet();
                     break;
 
             }
@@ -1597,7 +1674,7 @@ namespace TextRpg01
                         VillageCheckout = true;
                         AdventureCheckout = true;
                         AdventureTreeCheckout = true;
-
+                        SeaCheck = true;
                         PlayeritemCheckout = true;
                         StoreCheckout = true;
                         CaveCheckout = true;
@@ -1750,7 +1827,7 @@ namespace TextRpg01
                             break;
 
                         case 2:
-                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.ForegroundColor = ConsoleColor.DarkMagenta;
                             Console.Write("◎".PadRight(2, ' '));
                             Console.ForegroundColor = ConsoleColor.White;
                             break;
@@ -1763,7 +1840,11 @@ namespace TextRpg01
 
             DownSet1();
             DownSet2();
+            DownSet3();
 
+
+
+            Console.SetCursorPosition(0, 31);
 
             ConsoleKeyInfo Move;
 
@@ -1947,6 +2028,37 @@ namespace TextRpg01
                         {
                             gameboard[y, x] = -3;
 
+
+
+                            // 동굴 입구 막기
+                            if(x == 19 && 12 <= y && y <= 14)
+                            {
+                                if(AlrauneitemChk == true)
+                                {
+                                    /* Do Nothing */
+                                }
+                                else
+                                {
+                                    gameboard[y, x] = -2;
+
+                                }
+                            }
+
+
+                            // 바다 입구 막기
+                            if (x == 11 && 12 <= y && y <= 14)
+                            {
+                                if (CavetriggCount < 1)
+                                {
+                                    gameboard[y, x] = -2;
+                                }
+                                else
+                                {
+                                    /* Do Nothing */
+
+                                }
+                            }
+
                         }
                     }
 
@@ -1997,7 +2109,42 @@ namespace TextRpg01
 
                             break;
                         case -2:
-                            Console.Write("■".PadRight(2, ' '));
+                            if(((x == 19 && 12 <= y) && y <= 14 ))
+                            {
+                                if (AlrauneitemChk == false)
+                                {
+                                    Console.ForegroundColor = ConsoleColor.Green;
+                                    Console.Write("▤".PadRight(2, ' '));
+                                    Console.ForegroundColor = ConsoleColor.White;
+                                }
+
+                                else if (CavetriggCount < 1)
+                                {
+                                    Console.ForegroundColor = ConsoleColor.Gray;
+                                    Console.Write("▦".PadRight(2, ' '));
+                                    Console.ForegroundColor = ConsoleColor.White;
+
+                                }
+                                else
+                                { /* Do Nothing */ }
+                            }
+                            else if ((x == 11 && (12 <= y && y <= 14)))
+                            {
+                                if (CavetriggCount < 1)
+                                {
+                                    Console.ForegroundColor = ConsoleColor.Gray;
+                                    Console.Write("▦".PadRight(2, ' '));
+                                    Console.ForegroundColor = ConsoleColor.White;
+                                }
+                                else
+                                { /* Do Nothing */ }
+                            }
+
+                            else
+                            {
+                                Console.Write("■".PadRight(2, ' '));
+
+                            }
                             break;
 
                         case -1:
@@ -2018,7 +2165,7 @@ namespace TextRpg01
 
             DownSet1();
             DownSet2();
-
+            DownSet3();
 
             ConsoleKeyInfo Move;
 
@@ -2033,8 +2180,10 @@ namespace TextRpg01
                         if(gameboard[ArrowY - 1, ArrowX] == -3)
                         {
                             // 산으로 가기
+                            AlrauneHitChk = false;
                             GameboardClear();
                             AdventureTreeSet();
+                            MonsterSettingClear();
                             MonsterCreateSet();
 
                             while (AdventureTreeCheckout == false)
@@ -2056,9 +2205,20 @@ namespace TextRpg01
                     if (ArrowX == 2 || gameboard[ArrowY, ArrowX - 1] == -2 ||
                         gameboard[ArrowY, ArrowX - 1] == -3)
                     { 
-                        if(gameboard[ArrowY, ArrowX - 1] == -2)
+                        if(gameboard[ArrowY, ArrowX - 1] == -3)
                         {
                             // 바다로 가기
+                            GameboardClear();
+
+                            SeaCheck = false;
+                            PlayerSeaWalkCount = 0;
+                            AdventureSeaSet();
+
+                            while (SeaCheck == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+                                AdventureSea();
+                            }
                         }
                     }
                     else
@@ -2099,24 +2259,24 @@ namespace TextRpg01
                     break;
 
                 case ConsoleKey.D:
-                    if (ArrowX == 28 || gameboard[ArrowY, ArrowX + 1] == -2 ||
-                        gameboard[ArrowY, ArrowX + 1] == -3)
+                    if (ArrowX == 28 || gameboard[ArrowY, ArrowX + 1] == -2 )
                     {
-                        if(gameboard[ArrowY, ArrowX + 1] == -3)
+                        /* Do Nothing */
+                    }
+                    else if(gameboard[ArrowY, ArrowX + 1] == -3)
+                    {
+                        // 동굴로 가기
+                        GameboardClear();
+                        CavetriggChk = false;
+                        CaveCheckout = false;
+                        AdventureCaveSet();
+                        MonsterSettingClear();
+                        MonsterCreateSet();
+                        while (CaveCheckout == false)
                         {
-                            // 동굴로 가기
-                            GameboardClear();
+                            Console.SetCursorPosition(0, 0);
 
-                            AdventureCaveSet();
-                            MonsterCreateSet();
-                            CaveCheckout = false;
-                            while (CaveCheckout == false)
-                            {
-                                Console.SetCursorPosition(0, 0);
-
-                                AdventureCave();
-                            }
-
+                            AdventureCave();
                         }
                     }
                     else
@@ -2182,8 +2342,703 @@ namespace TextRpg01
                 }
             }
 
-        } // MonsterCreateSet()
+        } // MonsterReSetting()
 
+        // 몬스터 위치를 초기화하는 함수
+        public void MonsterSettingClear()
+        {
+            for (int y = 0; y < BOARDY; y++)
+            {
+                for (int x = 0; x < BOARDX; x++)
+                {
+                    gamemonsterboard[y, x] = 0;
+                }
+            }
+
+        } // MonsterReSetting()
+
+
+        // 바다 구현 좌표 함수
+        public void AdventureSeaSet()
+        {
+            for (int y = 0; y < BOARDY; y++)
+            {
+                for (int x = 0; x < BOARDX; x++)
+                {
+                    gameboard[y, x] = -1;
+
+                    // 테두리
+                    if (x == 0 || x == 30 || y == 0 || y == 30 ||
+                        x == 1 && (0 <= y && y <= 24) || x == 29 && (0 <= y && y <= 24))
+                    {
+                        gameboard[y, x] = -2;
+
+                    }
+
+
+
+
+                    // 플레이어 좌표
+                    if (x == 28 && y == 13)
+                    {
+                        gameboard[y, x] = 2;
+
+                        ArrowY = y;
+                        ArrowX = x;
+
+                    }
+
+                    // 보스 좌표
+                    if (y == 13 && x == 2)
+                    {
+                        gameboard[y, x] = 10;
+
+                    }
+
+                    // 기믹 좌표
+                    
+
+
+
+                    // 벽 취급 좌표
+                    if (y == 25 || y == 1)
+                    {
+                        gameboard[y, x] = -2;
+                    }
+
+                    if (x == 11 && (y == 26 || y == 27 || y == 28 || y == 29))
+                    {
+                        gameboard[y, x] = -2;
+
+                    }
+                    if(y == 24)
+                    {
+                        gameboard[y, x] = -2;
+
+                    }
+
+
+
+                    // 포탈 취급 좌표
+                    if ((y == 12 || y == 13 || y == 14) && x == 29)
+                    {
+                        gameboard[y, x] = -3;
+                    }
+
+
+                }
+            }
+
+            // 물결 효과
+            if(PlayerSeaWalkCount == 0 || PlayerSeaWalkCount == 3)
+            {
+                int Chkloop = 0;
+
+                for (int y = 2; y < 15; y++)
+                {
+                    for (int x = y; x < 15 - y; x++)
+                    {
+                        gameboard[y, x] = -10;
+
+                    }
+                }
+
+                for (int y = 2; y < 15; y++)
+                {
+                    for (int x = 11 + y; x < 26 - y; x++)
+                    {
+                        gameboard[y, x] = -10;
+
+                    }
+                }
+
+                for (int y = 2; y < 7; y++)
+                {
+                    for (int x = 22 + y; x < 31 - y; x++)
+                    {
+                        gameboard[y, x] = -10;
+
+                    }
+                }
+
+                Chkloop = 0;
+                for (int y = 23; y > 15; y--)
+                {
+                    for (int x = 18 + Chkloop; x < 29 - Chkloop; x++)
+                    {
+                        gameboard[y, x] = -10;
+
+                    }
+                    Chkloop++;
+                }
+
+                Chkloop = 0;
+                for (int y = 23; y > 15; y--)
+                {
+                    for (int x = 7 + Chkloop; x < 18 - Chkloop; x++)
+                    {
+                        gameboard[y, x] = -10;
+
+                    }
+                    Chkloop++;
+                }
+
+                Chkloop = 0;
+                for (int y = 23; y > 15; y--)
+                {
+                    for (int x = 2 + Chkloop; x < 7 - Chkloop; x++)
+                    {
+                        gameboard[y, x] = -10;
+
+                    }
+                    Chkloop++;
+                }
+            }
+
+            else if(PlayerSeaWalkCount == 1)
+            {
+                int Chkloop = 0;
+
+                for (int y = 2 + 2; y < 15 + 2; y++)
+                {
+                    for (int x = 2 + Chkloop; x < 13 - Chkloop; x++)
+                    {
+                        gameboard[y, x] = -10;
+
+                    }
+                    Chkloop++;
+                }
+                Chkloop = 0;
+
+                for (int y = 2 + 2; y < 15 + 2; y++)
+                {
+                    for (int x = 13 + Chkloop; x < 24 - Chkloop; x++)
+                    {
+                        gameboard[y, x] = -10;
+
+                    }
+                    Chkloop++;
+                }
+
+                Chkloop = 0;
+
+                for (int y = 2 + 2; y < 15 + 2; y++)
+                {
+                    for (int x = 24 + Chkloop; x < 29 - Chkloop; x++)
+                    {
+                        gameboard[y, x] = -10;
+
+                    }
+                    Chkloop++;
+                }
+
+                for (int y = 0; y < BOARDY; y++)
+                {
+                    for (int x = 0; x < BOARDX; x++)
+                    {
+                        if((y == 2 || y == 3) && (1 < x && x < 29))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if ((y == 22 || y == 23) && (1 < x && x < 29))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+                    }
+                }
+
+                Chkloop = 0;
+                for (int y = 21; y > 13; y--)
+                {
+                    for (int x = 18 + Chkloop; x < 29 - Chkloop; x++)
+                    {
+                        gameboard[y, x] = -10;
+
+                    }
+                    Chkloop++;
+                }
+
+                Chkloop = 0;
+                for (int y = 21; y > 13; y--)
+                {
+                    for (int x = 7 + Chkloop; x < 18 - Chkloop; x++)
+                    {
+                        gameboard[y, x] = -10;
+
+                    }
+                    Chkloop++;
+                }
+
+                Chkloop = 0;
+                for (int y = 21; y > 13; y--)
+                {
+                    for (int x = 2 + Chkloop; x < 7 - Chkloop; x++)
+                    {
+                        gameboard[y, x] = -10;
+
+                    }
+                    Chkloop++;
+                }
+
+            }
+
+            else if (PlayerSeaWalkCount == 2)
+            {
+                int Chkloop = 0;
+
+                for (int y = 4 + 2; y < 17 + 2; y++)
+                {
+                    for (int x = 2 + Chkloop; x < 13 - Chkloop; x++)
+                    {
+                        gameboard[y, x] = -10;
+
+                    }
+                    Chkloop++;
+                }
+                Chkloop = 0;
+
+                for (int y = 4 + 2; y < 17 + 2; y++)
+                {
+                    for (int x = 13 + Chkloop; x < 24 - Chkloop; x++)
+                    {
+                        gameboard[y, x] = -10;
+
+                    }
+                    Chkloop++;
+                }
+
+                Chkloop = 0;
+
+                for (int y = 4 + 2; y < 17 + 2; y++)
+                {
+                    for (int x = 24 + Chkloop; x < 29 - Chkloop; x++)
+                    {
+                        gameboard[y, x] = -10;
+
+                    }
+                    Chkloop++;
+                }
+
+                for (int y = 0; y < BOARDY; y++)
+                {
+                    for (int x = 0; x < BOARDX; x++)
+                    {
+                        if ((y == 2 || y == 3 || y == 4 || y == 5) && (1 < x && x < 29))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if ((y == 22 || y == 23 || y == 21 || y == 20) && (1 < x && x < 29))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+                    }
+                }
+
+                Chkloop = 0;
+                for (int y = 19; y > 11; y--)
+                {
+                    for (int x = 18 + Chkloop; x < 29 - Chkloop; x++)
+                    {
+                        gameboard[y, x] = -10;
+
+                    }
+                    Chkloop++;
+                }
+
+                Chkloop = 0;
+                for (int y = 19; y > 11; y--)
+                {
+                    for (int x = 7 + Chkloop; x < 18 - Chkloop; x++)
+                    {
+                        gameboard[y, x] = -10;
+
+                    }
+                    Chkloop++;
+                }
+
+                Chkloop = 0;
+                for (int y = 19; y > 11; y--)
+                {
+                    for (int x = 2 + Chkloop; x < 7 - Chkloop; x++)
+                    {
+                        gameboard[y, x] = -10;
+
+                    }
+                    Chkloop++;
+                }
+
+            }
+            else { /* Do Nothing */ }
+
+
+        } //  AdventureSeaSet()
+
+
+        // 동굴 구현 함수
+        public void AdventureSea()
+        {
+            if (PlayerSeaWalkCount == 3)
+            {
+                PlayerSeaWalkCount = 0;
+            }
+            else { /* Do Nothing */ }
+
+            for (int y = 0; y < BOARDY; y++)
+            {
+                for (int x = 0; x < BOARDX; x++)
+                {
+                    switch (gameboard[y, x])
+                    {
+                        case -10:
+                            Console.ForegroundColor = ConsoleColor.DarkBlue;
+
+                            Console.Write("Ξ".PadRight(2, ' '));
+                            Console.ForegroundColor = ConsoleColor.White;
+                            break;
+                        // 몬스터 값
+                        case 10:
+                            Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                            Console.Write("●".PadRight(2, ' '));
+                            Console.ForegroundColor = ConsoleColor.White;
+
+                            break;
+                        case -3:
+                            Console.ForegroundColor = ConsoleColor.Blue;
+
+                            Console.Write("■".PadRight(2, ' '));
+                            Console.ForegroundColor = ConsoleColor.White;
+
+                            break;
+                        case -2:
+                            Console.Write("■".PadRight(2, ' '));
+                            break;
+
+                        case -1:
+                            Console.Write(" ".PadRight(3, ' '));
+                            break;
+
+                        case 2:
+                            Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                            Console.Write("◎".PadRight(2, ' '));
+                            Console.ForegroundColor = ConsoleColor.White;
+                            break;
+
+                    }
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine();
+
+            DownSet1();
+            DownSet2();
+            DownSet3();
+
+
+            ConsoleKeyInfo Move;
+
+            Move = Console.ReadKey();
+
+            switch (Move.Key)
+            {
+                case ConsoleKey.W:
+                    if (ArrowY == 2 || gameboard[ArrowY - 1, ArrowX] == -2 ||
+                        gameboard[ArrowY - 1, ArrowX] == 10)
+                    {
+                        if (gameboard[ArrowY - 1, ArrowX] == 10)
+                        {
+
+                            BattleCheck = false;
+                            BattleONCheck = false;
+                            Battlemonsterturn = false;
+                            SavePlayerY = ArrowY;
+                            SavePlayerX = ArrowX;
+
+                            gamemonsterboard[ArrowY - 1, ArrowX] = 0;
+                            monster = new SeaBoss();
+
+                            GameboardClear();
+                            PlayerBattleVal[0] = 5;
+                            MonsterBattleVal[0] = monster.Monsterhp();
+                            MonsterBattleVal[1] = monster.Monsterdamage();
+                            MonsterBattleVal[2] = monster.Monsterdefence();
+
+                            BattleSet();
+
+                            while (BattleCheck == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+                                Battle();
+
+                            }
+
+                            GameboardClear();
+                            AdventureSeaSet();
+
+                            gameboard[ArrowY, ArrowX] = -1;
+                            ArrowY = SavePlayerY;
+                            ArrowX = SavePlayerX;
+                            gameboard[ArrowY, ArrowX] = 2;
+                           
+                        }
+                    }
+                    else if (gameboard[ArrowY - 1, ArrowX] == -10) 
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowY = 13;
+                        ArrowX = 28;
+                        gameboard[ArrowY, ArrowX] = 2;
+                        
+                    }
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowY--;
+                        gameboard[ArrowY, ArrowX] = 2;
+                    }
+                    SavePlayerY = ArrowY;
+                    SavePlayerX = ArrowX;
+
+                    PlayerSeaWalkCount++;
+                    GameboardClear();
+                    AdventureSeaSet();
+
+                    gameboard[ArrowY, ArrowX] = -1;
+                    ArrowY = SavePlayerY;
+                    ArrowX = SavePlayerX;
+                    gameboard[ArrowY, ArrowX] = 2;
+                    break;
+                case ConsoleKey.A:
+                    if (ArrowX == 2 || gameboard[ArrowY, ArrowX - 1] == -2 || gameboard[ArrowY, ArrowX - 1] == 10)
+                    {
+                        if (gameboard[ArrowY, ArrowX - 1] == 10)
+                        {
+
+                            BattleCheck = false;
+                            BattleONCheck = false;
+                            Battlemonsterturn = false;
+                            SavePlayerY = ArrowY;
+                            SavePlayerX = ArrowX;
+
+                            gamemonsterboard[ArrowY, ArrowX - 1] = 0;
+                            monster = new SeaBoss();
+
+                            GameboardClear();
+                            PlayerBattleVal[0] = 5;
+                            MonsterBattleVal[0] = monster.Monsterhp();
+                            MonsterBattleVal[1] = monster.Monsterdamage();
+                            MonsterBattleVal[2] = monster.Monsterdefence();
+
+                            BattleSet();
+
+                            while (BattleCheck == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+                                Battle();
+
+                            }
+
+                            GameboardClear();
+                            AdventureSeaSet();
+
+                            gameboard[ArrowY, ArrowX] = -1;
+                            ArrowY = SavePlayerY;
+                            ArrowX = SavePlayerX;
+                            gameboard[ArrowY, ArrowX] = 2;
+                        }
+                        
+                    }
+                    else if (gameboard[ArrowY, ArrowX - 1] == -10)
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowY = 13;
+                        ArrowX = 28;
+                        gameboard[ArrowY, ArrowX] = 2;
+                    }
+                    
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowX--;
+                        gameboard[ArrowY, ArrowX] = 2;
+                       
+                    }
+                    SavePlayerY = ArrowY;
+                    SavePlayerX = ArrowX;
+
+                    PlayerSeaWalkCount++;
+                    GameboardClear();
+                    AdventureSeaSet();
+
+                    gameboard[ArrowY, ArrowX] = -1;
+                    ArrowY = SavePlayerY;
+                    ArrowX = SavePlayerX;
+                    gameboard[ArrowY, ArrowX] = 2; 
+                    break;
+
+                case ConsoleKey.S:
+
+                    if (ArrowY == 23 || gameboard[ArrowY + 1, ArrowX] == -2 || gameboard[ArrowY + 1, ArrowX] == 10)
+                    {
+
+                        if (gameboard[ArrowY + 1, ArrowX] == 10)
+                        {
+
+                            BattleCheck = false;
+                            BattleONCheck = false;
+                            Battlemonsterturn = false;
+                            SavePlayerY = ArrowY;
+                            SavePlayerX = ArrowX;
+
+                            gamemonsterboard[ArrowY + 1, ArrowX] = 0;
+                            monster = new SeaBoss();
+
+                            GameboardClear();
+                            PlayerBattleVal[0] = 5;
+                            MonsterBattleVal[0] = monster.Monsterhp();
+                            MonsterBattleVal[1] = monster.Monsterdamage();
+                            MonsterBattleVal[2] = monster.Monsterdefence();
+
+                            BattleSet();
+
+                            while (BattleCheck == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+                                Battle();
+
+                            }
+
+                            GameboardClear();
+                            AdventureSeaSet();
+
+                            gameboard[ArrowY, ArrowX] = -1;
+                            ArrowY = SavePlayerY;
+                            ArrowX = SavePlayerX;
+                            gameboard[ArrowY, ArrowX] = 2;
+                        }
+
+                    }
+                    else if (gameboard[ArrowY + 1, ArrowX] == -10) 
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowY = 13;
+                        ArrowX = 28;
+                        gameboard[ArrowY, ArrowX] = 2;
+                        
+                    }
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowY++;
+                        gameboard[ArrowY, ArrowX] = 2;
+                        
+                    }
+                    SavePlayerY = ArrowY;
+                    SavePlayerX = ArrowX;
+
+                    PlayerSeaWalkCount++;
+                    GameboardClear();
+                    AdventureSeaSet();
+
+                    gameboard[ArrowY, ArrowX] = -1;
+                    ArrowY = SavePlayerY;
+                    ArrowX = SavePlayerX;
+                    gameboard[ArrowY, ArrowX] = 2;
+                    break;
+
+                case ConsoleKey.D:
+                    if (ArrowX == 28 || gameboard[ArrowY, ArrowX + 1] == -2 || gameboard[ArrowY, ArrowX + 1] == 10)
+                    {
+                        if (gameboard[ArrowY, ArrowX + 1] == 10)
+                        {
+
+                            BattleCheck = false;
+                            BattleONCheck = false;
+                            Battlemonsterturn = false;
+                            SavePlayerY = ArrowY;
+                            SavePlayerX = ArrowX;
+
+                            gamemonsterboard[ArrowY, ArrowX + 1] = 0;
+                            monster = new SeaBoss();
+
+                            GameboardClear();
+                            PlayerBattleVal[0] = 5;
+                            MonsterBattleVal[0] = monster.Monsterhp();
+                            MonsterBattleVal[1] = monster.Monsterdamage();
+                            MonsterBattleVal[2] = monster.Monsterdefence();
+
+                            BattleSet();
+
+                            while (BattleCheck == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+                                Battle();
+
+                            }
+
+                            GameboardClear();
+                            AdventureSeaSet();
+
+                            gameboard[ArrowY, ArrowX] = -1;
+                            ArrowY = SavePlayerY;
+                            ArrowX = SavePlayerX;
+                            gameboard[ArrowY, ArrowX] = 2;
+                           
+                        }
+                        else if (ArrowY == 12 || ArrowY == 13 || ArrowY == 14)
+                        {
+                            // 모험 떠나기
+                            // 모험 구현
+                            GameboardClear();
+                            AdventureCheckout = false;
+                            AdventureSet();
+                            while (AdventureCheckout == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+
+                                Adventure();
+                            }
+                        }
+                    }
+                    else if (gameboard[ArrowY, ArrowX + 1] == -10)
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowY = 13;
+                        ArrowX = 28;
+                        gameboard[ArrowY, ArrowX] = 2;
+                        
+                    }
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowX++;
+                        gameboard[ArrowY, ArrowX] = 2;
+                        
+                    }
+                    SavePlayerY = ArrowY;
+                    SavePlayerX = ArrowX;
+
+                    PlayerSeaWalkCount++;
+                    GameboardClear();
+                    AdventureSeaSet();
+
+                    gameboard[ArrowY, ArrowX] = -1;
+                    ArrowY = SavePlayerY;
+                    ArrowX = SavePlayerX;
+                    gameboard[ArrowY, ArrowX] = 2;
+
+                    break;
+
+            }
+
+
+
+        } // AdventureSea()
 
 
         // 동굴 구현 좌표 함수
@@ -2227,208 +3082,226 @@ namespace TextRpg01
 
                     }
 
-                    if (x == 3 && (2 <= y && y <= 7))
+                    if (CavetriggChk == false)
                     {
-                        gameboard[y, x] = -10;
 
+                        if (x == 3 && (2 <= y && y <= 7))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+                        if (y == 1 && (0 < x && x < 30))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if (x == 29 && (0 < y && y < 25))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if (x == 1 && (0 < y && y < 12))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if (x == 1 && (14 < y && y < 25))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if (x == 5 && (3 <= y && y <= 8))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if (x == 7 && (2 <= y && y <= 7))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+                        if ((9 <= x && x <= 11) && (4 <= y && y <= 5))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if (y == 8 && (9 <= x && x <= 13))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+                        if (x == 13 && (4 <= y && y <= 7))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+                        if ((14 <= x && x <= 16) && (20 <= y && y <= 23))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+                        if (y == 24 && (0 < x && x < 30))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if ((17 <= y && y <= 18) && (9 <= x && x <= 12))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+                        if ((11 <= y && y <= 14) && (11 <= x && x <= 13))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if (y == 11 && (1 < x && x < 5))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if (y == 9 && (2 < x && x < 7))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if ((14 <= y && y <= 16) && (x == 3 || x == 4))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+                        if (y == 18 && (2 <= x && x <= 5))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if (y == 21 && (3 <= x && x <= 6))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if (x == 5 && (22 <= y && y <= 24))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if ((12 <= y && y <= 14) && x == 15)
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if ((6 <= x && x <= 9) && (11 <= y && y <= 12))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if ((y == 12 || y == 14) && (15 <= x && x <= 17))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if ((8 <= x && x <= 12) && y == 22)
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if (x == 7 && (14 <= y && y <= 19))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+                        if ((18 <= x && x <= 19) && (8 <= y && y <= 12))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if ((17 <= y && y <= 18) && (14 <= x && x <= 20))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if ((15 <= x && x <= 16) && (2 <= y && y <= 8))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+                        if ((17 <= x && x <= 18) && (14 <= y && y <= 16))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if (x == 27 && (18 <= y && y <= 23))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if (x == 23 && (18 <= y && y <= 23))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+                        if (x == 25 && (15 <= y && y <= 22))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+                        if (y == 14 && (21 <= x && x <= 29))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if ((4 <= y && y <= 6) && (21 <= x && x <= 25))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+
+                        if ((23 <= x && x <= 27) && (9 <= y && y <= 11))
+                        {
+                            gameboard[y, x] = -10;
+
+                        }
+                        // 기믹 트리거 좌표
+                        if (y == 13 && x == 16)
+                        {
+                            gameboard[y, x] = 20;
+                        }
                     }
-                    if (y == 1 && (0 < x && x < 30))
+                    else
                     {
-                        gameboard[y, x] = -10;
+                        if((y == 11 || y == 15) && (0 < x && x < 19))
+                        {
+                            gameboard[y, x] = -2;
 
-                    }
+                        }
 
-                    if (x == 29 && (0 < y && y < 25))
-                    {
-                        gameboard[y, x] = -10;
+                        if(x == 18 && (11 <= y&& y <= 15))
+                        {
+                            gameboard[y, x] = -2;
 
-                    }
-
-                    if (x == 1 && (0 < y && y < 12))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-
-                    if (x == 1 && (14 < y && y < 25))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-
-                    if (x == 5 && (3 <= y && y <= 8))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-
-                    if (x == 7 && (2 <= y && y <= 7))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-                    if((9<=x&&x<=11) && (4 <= y && y <= 5))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-
-                    if(y==8 && (9 <= x && x <= 13))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-                    if (x == 13 && (4 <= y && y <= 7))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-                    if ((14 <= x && x <= 16) && (20 <= y && y <= 23))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-                    if (y==24&&(0<x&&x<30))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-
-                    if((17<=y&&y<=18) && (9 <= x && x <= 12))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-                    if ((11 <= y && y <= 14) && (11 <= x && x <= 13))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-
-                    if (y == 11 &&(1 < x && x < 5))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-
-                    if(y == 9 &&( 2 < x && x < 7))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-
-                    if((14 <= y&& y <=16) && (x == 3 || x == 4))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-                    if (y == 18 && (2 <= x&& x<=5))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-
-                    if (y == 21 &&(3 <= x&& x <= 6))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-
-                    if (x == 5 && (22 <= y && y <= 24))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-
-                    if((12<=y&& y<= 14) && x == 15)
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-
-                    if((6<= x&& x<=9) && (11 <= y && y <= 12))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-
-                    if ((y == 12 || y==14) && (15 <= x && x <= 17))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-
-                    if((8<=x&&x<=12) && y==22)
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-
-                    if (x == 7 && (14 <= y && y <= 19))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-                    if ((18<=x&&x<=19) && (8 <= y && y <= 12))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-
-                    if ((17<=y&&y<= 18) && (14 <= x && x <= 20))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-
-                    if ((15 <= x && x <= 16) && (2 <= y && y <= 8))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-                    if ((17 <= x && x <= 18) && (14 <= y && y <= 16))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-
-                    if (x == 27 && (18 <= y && y <= 23))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-
-                    if (x == 23 && (18 <= y && y <= 23))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-                    if (x == 25 && (15 <= y && y <= 22))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-                    if (y == 14 && (21 <= x && x <= 29))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-
-                    if ((4<=y&&y<=6) && (21 <= x && x <= 25))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-
-                    if ((23 <= x && x <= 27) && (9 <= y && y <= 11))
-                    {
-                        gameboard[y, x] = -10;
-
-                    }
-                    // 기믹 트리거 좌표
-                    if (y == 13 && x == 16)
-                    {
-                        gameboard[y, x] = 20;
+                        }
                     }
 
                     // 포탈 취급 좌표
@@ -2551,7 +3424,7 @@ namespace TextRpg01
 
             DownSet1();
             DownSet2();
-
+            DownSet3();
 
             ConsoleKeyInfo Move;
 
@@ -2664,6 +3537,23 @@ namespace TextRpg01
                         }
                     }
                     else if (gameboard[ArrowY, ArrowX-1] == -10) { /* Do Nothing */ }
+                    else if (gameboard[ArrowY, ArrowX - 1] == 20)
+                    {
+                        // 동굴 작동 트리거
+                        CavetriggChk = true;
+                        CavetriggCount++;
+
+                        SavePlayerY = ArrowY;
+                        SavePlayerX = ArrowX;
+
+                        GameboardClear(); 
+                        AdventureCaveSet();
+
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowY = SavePlayerY;
+                        ArrowX = SavePlayerX;
+                        gameboard[ArrowY, ArrowX] = 2;
+                    }
                     else
                     {
                         gameboard[ArrowY, ArrowX] = -1;
@@ -2809,6 +3699,16 @@ namespace TextRpg01
 
                     }
 
+                    // 알라우네 좌표
+                    if(AlrauneHitChk == false)
+                    {
+                        if (x == 15 && y == 3)
+                        {
+                            gameboard[y, x] = 10;
+
+                        }
+                    }
+                    else { /* Do Nothing */}
 
                     // 벽 취급 좌표
                     if (y == 25 || y == 1)
@@ -2827,9 +3727,57 @@ namespace TextRpg01
                         gameboard[y, x] = -3;
                     }
 
+                    // 산 표현 좌표
+                    if (y == 2 && x == 15)
+                    {
+                        // 정 중앙
+                        gameboard[y, x] = -2;
+
+                    }
+
+                    if ((y == 3 && x == 14) || (y == 4 && x == 13) || (y == 5 && x == 12) || (y == 6 && x == 11)
+                        || (y == 7 && x == 10) || (y == 8 && x == 9) || (y == 9 && x == 8) || (y == 10 && x == 7)
+                        || (y == 11 && x == 6) || (y == 12 && x == 5) || (y == 13 && x == 4) || (y == 14 && x == 3)
+                        || (y == 15 && x == 2))
+                    {
+                        gameboard[y, x] = -2;
+
+                    }
+                    if ((y == 3 && x == 16) || (y == 4 && x == 17) || (y == 5 && x == 18) || (y == 6 && x == 19) ||
+                        (y == 7 && x == 20) || (y == 8 && x == 21) || (y == 9 && x == 22) || (y == 10 && x == 23) ||
+                        (y == 11 && x == 24) || (y == 12 && x == 25) || (y == 13 && x == 26) || (y == 14 && x == 27) ||
+                        (y == 15 && x == 28) )
+                    {
+                        gameboard[y, x] = -2;
+
+                    }
+
 
                 }
             }
+
+            // 하늘 표현
+            int count = 15;
+
+            for (int y = 0 + 2; y < 14 + 1; y++)
+            {
+                for (int x = 0+2; x < count; x++)
+                {
+                    gameboard[y, x] = -10;
+
+                }
+                count--;
+            }
+
+            for (int y = 0 + 2; y < 15 + 1; y++)
+            {
+                for (int x = 14 + y; x < 28 + 1; x++)
+                {
+                    gameboard[y, x] = -10;
+
+                }
+            }
+
 
         } //  AdventureTreeSet()
 
@@ -2842,10 +3790,26 @@ namespace TextRpg01
                 {
                     switch (gameboard[y, x])
                     {
-                        case 10:
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write("◈".PadRight(2, ' '));
+                        case -10:
+                            Console.ForegroundColor = ConsoleColor.DarkBlue;
+                            Console.Write("Ξ".PadRight(2, ' '));
                             Console.ForegroundColor = ConsoleColor.White;
+
+                            break;
+                        case 10:
+                            if(x == 15 && y == 3)
+                            {
+                                // 알라우네
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.Write("◈".PadRight(2, ' '));
+                                Console.ForegroundColor = ConsoleColor.White;
+                            }
+                            else
+                            {
+                                Console.ForegroundColor = ConsoleColor.Gray;
+                                Console.Write("◈".PadRight(2, ' '));
+                                Console.ForegroundColor = ConsoleColor.White;
+                            }
 
                             break;
                         case -3:
@@ -2856,7 +3820,35 @@ namespace TextRpg01
 
                             break;
                         case -2:
-                            Console.Write("■".PadRight(2, ' '));
+                            if ((y == 3 && x == 14) || (y == 4 && x == 13) || (y == 5 && x == 12) || (y == 6 && x == 11)
+                        || (y == 7 && x == 10) || (y == 8 && x == 9) || (y == 9 && x == 8) || (y == 10 && x == 7)
+                        || (y == 11 && x == 6) || (y == 12 && x == 5) || (y == 13 && x == 4) || (y == 14 && x == 3)
+                        || (y == 15 && x == 2))
+                            {
+                                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                                Console.Write("▨".PadRight(2, ' '));
+                                Console.ForegroundColor = ConsoleColor.White;
+                            }
+                            else if ((y == 3 && x == 16) || (y == 4 && x == 17) || (y == 5 && x == 18) || (y == 6 && x == 19) ||
+                        (y == 7 && x == 20) || (y == 8 && x == 21) || (y == 9 && x == 22) || (y == 10 && x == 23) ||
+                        (y == 11 && x == 24) || (y == 12 && x == 25) || (y == 13 && x == 26) || (y == 14 && x == 27) ||
+                        (y == 15 && x == 28))
+                            {
+                                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                                Console.Write("▧".PadRight(2, ' '));
+                                Console.ForegroundColor = ConsoleColor.White;
+                            }
+                            else if (y == 2 && x == 15)
+                            {
+                                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                                Console.Write("▩".PadRight(2, ' '));
+                                Console.ForegroundColor = ConsoleColor.White;
+                            }
+                            else
+                            {
+                                Console.Write("■".PadRight(2, ' '));
+                            }
+
                             break;
 
                         case -1:
@@ -2877,7 +3869,7 @@ namespace TextRpg01
 
             DownSet1();
             DownSet2();
-
+            DownSet3();
 
             ConsoleKeyInfo Move;
 
@@ -2892,6 +3884,7 @@ namespace TextRpg01
                         if (gameboard[ArrowY - 1, ArrowX] == 10)
                         {
                             
+                            
                             BattleCheck = false;
                             BattleONCheck = false;
                             Battlemonsterturn = false;
@@ -2899,7 +3892,15 @@ namespace TextRpg01
                             SavePlayerX = ArrowX;
 
                             gamemonsterboard[ArrowY - 1, ArrowX] = 0;
-                            monster = new Wolf();
+
+                            if(ArrowX == 15 && ArrowY - 1 == 3)
+                            {
+                                monster = new Alraune();
+                            }
+                            else
+                            {
+                                monster = new Wolf();
+                            }
 
                             GameboardClear();
                             PlayerBattleVal[0] = 5;
@@ -3139,6 +4140,17 @@ namespace TextRpg01
 
         } // DownSet2()
 
+        public void DownSet3()
+        {
+
+            Console.SetCursorPosition(67, 26);
+            Console.WriteLine("[가방]");
+            Console.SetCursorPosition(67, 27);
+            Console.WriteLine($"골드 : {PlayeritemVal[0]}");
+
+
+        } // DownSet3()
+        
 
         // 배틀 시작시 구현 좌표 함수 
         public void BattleSet()
@@ -3256,7 +4268,7 @@ namespace TextRpg01
 
             ConsoleKeyInfo Move;
 
-            Console.SetCursorPosition(0, 30);
+            Console.SetCursorPosition(0, 31);
             Move = Console.ReadKey();
 
             switch (Move.Key)
@@ -3303,6 +4315,11 @@ namespace TextRpg01
                             BattleONCheck = false;
                             BattleCheck = true;
 
+                            if (ArrowY - 1 == 3 && ArrowX == 15)
+                            {
+                                AlrauneHitChk = true;
+                            }
+
                             Console.SetCursorPosition(30, 15);
                             Console.WriteLine($"{PlayerOccupation} {PlayerName} 의 도망이 성공했습니다.");
                             
@@ -3342,86 +4359,140 @@ namespace TextRpg01
                 {
                     if (PlayerWearWeps[0] == "기본용 양손검")
                     {
-                        weps = new warrior1();
+                        weps = new Warrior1();
                         TotalDamage += weps.Wepdamage();
                         Totaldefence += weps.Wepdefence();
                     }
                     else if (PlayerWearWeps[0] == "기본용 마법봉")
                     {
-
+                        weps = new Magic1();
+                        TotalDamage += weps.Wepdamage();
+                        Totaldefence += weps.Wepdefence();
                     }
                     else if (PlayerWearWeps[0] == "기본용 단검")
                     {
-
+                        weps = new Rogue1();
+                        TotalDamage += weps.Wepdamage();
+                        Totaldefence += weps.Wepdefence();
                     }
+                    else { /* Do Nothing */ }
                 }
-                else if (PlayerWearWeps[0] == "그레이트 소드")
+                else if (PlayerWearWeps[0] == "그레이트 소드" || PlayerWearWeps[0] == "정령의 지팡이" || PlayerWearWeps[0] == "날이 잘 갈린 단검")
                 {
                     if (PlayerWearWeps[0] == "그레이트 소드")
                     {
-                        weps = new warrior4();
+                        weps = new Warrior4();
                         TotalDamage += weps.Wepdamage();
                         Totaldefence += weps.Wepdefence();
 
                     }
+                    else if (PlayerWearWeps[0] == "정령의 지팡이")
+                    {
+                        weps = new Magic4();
+                        TotalDamage += weps.Wepdamage();
+                        Totaldefence += weps.Wepdefence();
+                    }
+                    else if (PlayerWearWeps[0] == "날이 잘 갈린 단검")
+                    {
+                        weps = new Rogue4();
+                        TotalDamage += weps.Wepdamage();
+                        Totaldefence += weps.Wepdefence();
+                    }
+                    else { /* Do Nothing */ }
                 }
-                else { }
+                else {/* Do Nothing */ }
 
-                if(PlayerWearWeps[1] == "기본용 갑옷" || PlayerWearWeps[1] == "기본용 마법복" || PlayerWearWeps[1] == "기본용 복장")
+                if(PlayerWearWeps[1] == "기본용 갑옷" || PlayerWearWeps[1] == "기본용 마법복" || PlayerWearWeps[1] == "기본용 트레이닝 복장")
                 {
                     if (PlayerWearWeps[1] == "기본용 갑옷")
                     {
-                        weps = new warrior2();
+                        weps = new Warrior2();
                         TotalDamage += weps.Wepdamage();
                         Totaldefence += weps.Wepdefence();
                     }
                     else if (PlayerWearWeps[1] == "기본용 마법복")
                     {
-
-                    }
-                    else if (PlayerWearWeps[1] == "기본용 복장")
-                    {
-
-                    }
-                }
-                else if (PlayerWearWeps[1] == "판금 갑옷")
-                {
-                    if (PlayerWearWeps[1] == "판금 갑옷")
-                    {
-                        weps = new warrior5();
+                        weps = new Magic2();
                         TotalDamage += weps.Wepdamage();
                         Totaldefence += weps.Wepdefence();
                     }
+                    else if (PlayerWearWeps[1] == "기본용 복장")
+                    {
+                        weps = new Rogue3();
+                        TotalDamage += weps.Wepdamage();
+                        Totaldefence += weps.Wepdefence();
+                    }
+                    else { /* Do Nothing */ }
                 }
-                else { }
+                else if (PlayerWearWeps[1] == "판금 갑옷" || PlayerWearWeps[1] == "마법 부여 복장" || PlayerWearWeps[1] == "위장용 도적 복장")
+                {
+                    if (PlayerWearWeps[1] == "판금 갑옷")
+                    {
+                        weps = new Warrior5();
+                        TotalDamage += weps.Wepdamage();
+                        Totaldefence += weps.Wepdefence();
+                    }
+                    else if (PlayerWearWeps[1] == "마법 부여 복장")
+                    {
+                        weps = new Magic5();
+                        TotalDamage += weps.Wepdamage();
+                        Totaldefence += weps.Wepdefence();
+                    }
+                    else if (PlayerWearWeps[1] == "위장용 도적 복장")
+                    {
+                        weps = new Rogue5();
+                        TotalDamage += weps.Wepdamage();
+                        Totaldefence += weps.Wepdefence();
+                    }
+                    else { /* Do Nothing */ }
+                }
+                else { /* Do Nothing */ }
 
                 if (PlayerWearWeps[2] == "기본용 전사의 가호" || PlayerWearWeps[2] == "기본용 마법사의 가호" || PlayerWearWeps[2] == "기본용 도적의 가호")
                 {
                     if (PlayerWearWeps[2] == "기본용 전사의 가호")
                     {
-                        weps = new warrior3();
+                        weps = new Warrior3();
                         TotalDamage += weps.Wepdamage();
                         Totaldefence += weps.Wepdefence();
                     }
                     else if (PlayerWearWeps[2] == "기본용 마법사의 가호")
                     {
-
-                    }
-                    else if (PlayerWearWeps[2] == "기본용 도적의 가호")
-                    {
-
-                    }
-                }
-                else if (PlayerWearWeps[2] == "숙련된 전사의 가호")
-                {
-                    if (PlayerWearWeps[2] == "숙련된 전사의 가호")
-                    {
-                        weps = new warrior6();
+                        weps = new Magic3();
                         TotalDamage += weps.Wepdamage();
                         Totaldefence += weps.Wepdefence();
                     }
+                    else if (PlayerWearWeps[2] == "기본용 도적의 가호")
+                    {
+                        weps = new Rogue3();
+                        TotalDamage += weps.Wepdamage();
+                        Totaldefence += weps.Wepdefence();
+                    }
+                    else { /* Do Nothing */ }
                 }
-                else { }
+                else if (PlayerWearWeps[2] == "숙련된 전사의 가호" || PlayerWearWeps[2] == "숙련된 마법사의 가호" || PlayerWearWeps[2] == "숙련된 도적의 가호")
+                {
+                    if (PlayerWearWeps[2] == "숙련된 전사의 가호")
+                    {
+                        weps = new Warrior6();
+                        TotalDamage += weps.Wepdamage();
+                        Totaldefence += weps.Wepdefence();
+                    }
+                    else if (PlayerWearWeps[2] == "숙련된 마법사의 가호")
+                    {
+                        weps = new Magic6();
+                        TotalDamage += weps.Wepdamage();
+                        Totaldefence += weps.Wepdefence();
+                    }
+                    else if (PlayerWearWeps[2] == "숙련된 도적의 가호")
+                    {
+                        weps = new Rogue6();
+                        TotalDamage += weps.Wepdamage();
+                        Totaldefence += weps.Wepdefence();
+                    }
+                    else { /* Do Nothing */ }
+                }
+                else { /* Do Nothing */ }
 
                 Console.SetCursorPosition(30, 15);
                 Console.WriteLine($"{PlayerOccupation} {PlayerName} 이(가) {monster.Monstername()} 을 공격했다.");
@@ -3495,11 +4566,13 @@ namespace TextRpg01
                 Console.SetCursorPosition(30, 15);
                 Console.WriteLine($"{monster.Monstername()} 이(가) {PlayerOccupation} {PlayerName} 을 공격했다.");
 
-                dice = random.Next(1, 10 + 1);
+                dice = random.Next(1, 20 + 1);
 
                 if (PlayerBattleVal[2] + Totaldefence < MonsterBattleVal[1] + dice)
                 {
                     int dice2 = random.Next(1, 10 + 1);
+
+
 
                     if (PlayerBattleVal[2] + Totaldefence + dice2 < MonsterBattleVal[1] + dice)
                     {
@@ -3508,14 +4581,41 @@ namespace TextRpg01
                         Console.SetCursorPosition(0, 0);
                         BattleView();
 
-                        PlayerBattleVal[0]--;
-                        Console.SetCursorPosition(30, 17);
-                        Console.WriteLine($"{monster.Monstername()} 의 공격이 성공했다.".PadLeft(20, ' '));
-                        Console.SetCursorPosition(30, 18);
 
-                        Console.WriteLine($"{PlayerOccupation} {PlayerName} 의 체력이 줄었다.".PadLeft(20, ' '));
+                        if (monster.Monstername() == "알라우네" && 10 < dice)
+                        {
+                            PlayerBattleVal[0] -= 2;
+                            Console.SetCursorPosition(30, 17);
+                            Console.WriteLine($"{monster.Monstername()} 가(이) {monster.Eliteskill()} 스킬을 발동했다.".PadLeft(20, ' '));
+                            Console.SetCursorPosition(30, 18);
 
-                        BattleHitplayerChk = false;
+                            Console.WriteLine($"{PlayerOccupation} {PlayerName} 의 체력이 2 줄었다.".PadLeft(20, ' '));
+
+                            BattleHitplayerChk = false;
+                        }
+                        else if (monster.Monstername() == "마왕 바알" && 10 < dice)
+                        {
+                            PlayerBattleVal[0] -= 2;
+                            Console.SetCursorPosition(30, 17);
+                            Console.WriteLine($"{monster.Monstername()} 가(이) {monster.Eliteskill()} 스킬을 발동했다.".PadLeft(20, ' '));
+                            Console.SetCursorPosition(30, 18);
+
+                            Console.WriteLine($"{PlayerOccupation} {PlayerName} 의 체력이 2 줄었다.".PadLeft(20, ' '));
+
+                            BattleHitplayerChk = false;
+                        }
+                        else
+                        {
+                            PlayerBattleVal[0]--;
+
+                            Console.SetCursorPosition(30, 17);
+                            Console.WriteLine($"{monster.Monstername()} 의 공격이 성공했다.".PadLeft(20, ' '));
+                            Console.SetCursorPosition(30, 18);
+
+                            Console.WriteLine($"{PlayerOccupation} {PlayerName} 의 체력이 줄었다.".PadLeft(20, ' '));
+
+                            BattleHitplayerChk = false;
+                        }
                     }
                     else
                     {
@@ -3563,14 +4663,14 @@ namespace TextRpg01
                 Console.SetCursorPosition(0, 0);
                 BattleView();
 
-                if (PlayerBattleVal[0] == 0 || MonsterBattleVal[0] == 0)
+                if (PlayerBattleVal[0] <= 0 || MonsterBattleVal[0] <= 0)
                 {
-                    if(PlayerBattleVal[0] == 0)
+                    if(PlayerBattleVal[0] <= 0)
                     {
                         PlayerBattleVal[3]--;
                         Console.SetCursorPosition(30, 15);
                         Console.WriteLine($"{PlayerOccupation} {PlayerName} 은 {monster.Monstername()} 와의 전투에서 패배했다.".PadLeft(20, ' '));
-                        if(PlayerBattleVal[3] == 0)
+                        if(PlayerBattleVal[3] <= 0)
                         {
                             Console.SetCursorPosition(30, 16);
                             Console.WriteLine($"{PlayerOccupation} {PlayerName} 의 남은 체력이 없습니다.".PadLeft(20, ' '));
@@ -3593,7 +4693,13 @@ namespace TextRpg01
 
                         Console.SetCursorPosition(26, 15);
                         Console.WriteLine($"{PlayerOccupation} {PlayerName} 은 {monster.Monstername()} 와의 전투에서 승리했다.".PadLeft(20, ' '));
-                       
+
+                        if (monster.Monstername() == "악마 바알")
+                        {
+                            randomitem = 20;
+                        }
+                        else { /* Do Nothing */ }
+
 
                         if(9 < randomitem)
                         {
@@ -3609,6 +4715,27 @@ namespace TextRpg01
                             {
                                 PlayeritemVal[4]++;
                             }
+                            else if(monster.Monsteritem() == "알라우네의 보석")
+                            {
+                                PlayeritemVal[3]++;
+                                AlrauneitemChk = true;
+
+                            }
+                            else if(monster.Monsteritem() == "바알의 보석")
+                            {
+                                PlayeritemVal[5]++;
+                                // 게임 끝내기
+                                VillageCheckout = true;
+                                AdventureCheckout = true;
+                                AdventureTreeCheckout = true;
+                                SeaCheck = true;
+                                PlayeritemCheckout = true;
+                                StoreCheckout = true;
+                                CaveCheckout = true;
+                                ChoiceCheck = true;
+                                isGameOver = true;
+                            }
+                            
 
 
                             for (int i = 0; i < Playeritem.Count; i++)
@@ -3642,8 +4769,17 @@ namespace TextRpg01
                         }
 
 
+
                     }
                     BattleCheck = true;
+
+
+                    
+
+                    if(ArrowX == 15 && ArrowY-1 == 3)
+                    {
+                        AlrauneHitChk = true;
+                    }
                 }
             }
             else { }
@@ -3688,30 +4824,79 @@ namespace TextRpg01
                             Console.Write(" ".PadLeft(37, ' '));
                             break;
                         case 10:
-                            if (BattleONCheck == true)
+                            if (PlayerOccupation == "전사")
                             {
-                                if(BattleHitplayerChk == true)
+                                if (BattleONCheck == true)
                                 {
-                                    Console.ForegroundColor = ConsoleColor.Red;
-                                    Console.Write("∫◎".PadLeft(32, ' '));
-                                    Console.ForegroundColor = ConsoleColor.White;
+                                    if (BattleHitplayerChk == true)
+                                    {
+                                        Console.ForegroundColor = ConsoleColor.Red;
+                                        Console.Write("∫◎".PadLeft(32, ' '));
+                                        Console.ForegroundColor = ConsoleColor.White;
+
+                                    }
+                                    else
+                                    {
+                                        Console.Write("∫◎".PadLeft(32, ' '));
+
+                                    }
 
                                 }
                                 else
                                 {
-                                    Console.Write("∫◎".PadLeft(32, ' '));
+                                    Console.Write("∫◎".PadLeft(30, ' '));
 
                                 }
-
                             }
-                            else
+                            else if (PlayerOccupation == "마법사")
                             {
-                                Console.Write("∫◎".PadLeft(30, ' '));
+                                if (BattleONCheck == true)
+                                {
+                                    if (BattleHitplayerChk == true)
+                                    {
+                                        Console.ForegroundColor = ConsoleColor.Red;
+                                        Console.Write("∮◎".PadLeft(32, ' '));
+                                        Console.ForegroundColor = ConsoleColor.White;
 
+                                    }
+                                    else
+                                    {
+                                        Console.Write("∮◎".PadLeft(32, ' '));
+
+                                    }
+
+                                }
+                                else
+                                {
+                                    Console.Write("∮◎".PadLeft(30, ' '));
+
+                                }
                             }
+                            else if (PlayerOccupation == "도적")
+                            {
+                                if (BattleONCheck == true)
+                                {
+                                    if (BattleHitplayerChk == true)
+                                    {
+                                        Console.ForegroundColor = ConsoleColor.Red;
+                                        Console.Write("§◎".PadLeft(32, ' '));
+                                        Console.ForegroundColor = ConsoleColor.White;
 
-                            //Console.Write("∮◎".PadLeft(30, ' '));
-                            //Console.Write("§◎".PadLeft(30, ' '));
+                                    }
+                                    else
+                                    {
+                                        Console.Write("§◎".PadLeft(32, ' '));
+
+                                    }
+
+                                }
+                                else
+                                {
+                                    Console.Write("§◎".PadLeft(30, ' '));
+
+                                }
+                            }
+                            else { /* Do Nothing */ }
                             break;
                         case 20:
 
@@ -4021,6 +5206,76 @@ namespace TextRpg01
                         Console.Write($"{PlayeritemVal[8]}");
 
                     }
+                    else if (Playeritem[i] == "알라우네의 보석")
+                    {
+                        Console.Write($"{PlayeritemVal[3]}");
+                    }
+                    else if (Playeritem[i] == "유적 골렘의 파편")
+                    {
+                        Console.Write($"{PlayeritemVal[4]}");
+                    }
+                    else if (Playeritem[i] == "기본용 마법봉")
+                    {
+                        Console.Write($"{PlayeritemVal[12]}");
+
+                    }
+                    else if (Playeritem[i] == "기본용 마법복")
+                    {
+                        Console.Write($"{PlayeritemVal[13]}");
+
+                    }
+                    else if (Playeritem[i] == "기본용 마법사의 가호")
+                    {
+                        Console.Write($"{PlayeritemVal[14]}");
+
+                    }
+                    else if (Playeritem[i] == "정령의 지팡이")
+                    {
+                        Console.Write($"{PlayeritemVal[15]}");
+
+                    }
+                    else if (Playeritem[i] == "마법 부여 복장")
+                    {
+                        Console.Write($"{PlayeritemVal[16]}");
+
+                    }
+                    else if (Playeritem[i] == "숙련된 마법사의 가호")
+                    {
+                        Console.Write($"{PlayeritemVal[17]}");
+
+                    }
+                    else if (Playeritem[i] == "기본용 단검")
+                    {
+                        Console.Write($"{PlayeritemVal[18]}");
+
+                    }
+                    else if (Playeritem[i] == "기본용 트레이닝 복장")
+                    {
+                        Console.Write($"{PlayeritemVal[19]}");
+
+                    }
+                    else if (Playeritem[i] == "기본용 도적의 가호")
+                    {
+                        Console.Write($"{PlayeritemVal[20]}");
+
+                    }
+                    else if (Playeritem[i] == "날이 잘 갈린 단검")
+                    {
+                        Console.Write($"{PlayeritemVal[21]}");
+
+                    }
+                    else if (Playeritem[i] == "위장용 도적 복장")
+                    {
+                        Console.Write($"{PlayeritemVal[22]}");
+
+                    }
+                    else if (Playeritem[i] == "숙련된 도적의 가호")
+                    {
+                        Console.Write($"{PlayeritemVal[23]}");
+
+                    }
+
+
                 }
                 else
                 {
@@ -4058,6 +5313,74 @@ namespace TextRpg01
                     else if (Playeritem[i] == "기본용 전사의 가호")
                     {
                         Console.Write($"{PlayeritemVal[8]}");
+
+                    }
+                    else if (Playeritem[i] == "알라우네의 보석")
+                    {
+                        Console.Write($"{PlayeritemVal[3]}");
+                    }
+                    else if (Playeritem[i] == "유적 골렘의 파편")
+                    {
+                        Console.Write($"{PlayeritemVal[4]}");
+                    }
+                    else if (Playeritem[i] == "기본용 마법봉")
+                    {
+                        Console.Write($"{PlayeritemVal[12]}");
+
+                    }
+                    else if (Playeritem[i] == "기본용 마법복")
+                    {
+                        Console.Write($"{PlayeritemVal[13]}");
+
+                    }
+                    else if (Playeritem[i] == "기본용 마법사의 가호")
+                    {
+                        Console.Write($"{PlayeritemVal[14]}");
+
+                    }
+                    else if (Playeritem[i] == "정령의 지팡이")
+                    {
+                        Console.Write($"{PlayeritemVal[15]}");
+
+                    }
+                    else if (Playeritem[i] == "마법 부여 복장")
+                    {
+                        Console.Write($"{PlayeritemVal[16]}");
+
+                    }
+                    else if (Playeritem[i] == "숙련된 마법사의 가호")
+                    {
+                        Console.Write($"{PlayeritemVal[17]}");
+
+                    }
+                    else if (Playeritem[i] == "기본용 단검")
+                    {
+                        Console.Write($"{PlayeritemVal[18]}");
+
+                    }
+                    else if (Playeritem[i] == "기본용 트레이닝 복장")
+                    {
+                        Console.Write($"{PlayeritemVal[19]}");
+
+                    }
+                    else if (Playeritem[i] == "기본용 도적의 가호")
+                    {
+                        Console.Write($"{PlayeritemVal[20]}");
+
+                    }
+                    else if (Playeritem[i] == "날이 잘 갈린 단검")
+                    {
+                        Console.Write($"{PlayeritemVal[21]}");
+
+                    }
+                    else if (Playeritem[i] == "위장용 도적 복장")
+                    {
+                        Console.Write($"{PlayeritemVal[22]}");
+
+                    }
+                    else if (Playeritem[i] == "숙련된 도적의 가호")
+                    {
+                        Console.Write($"{PlayeritemVal[23]}");
 
                     }
                     loopCount++;
@@ -4192,8 +5515,12 @@ namespace TextRpg01
                             Console.SetCursorPosition(33, 22);
                             Console.WriteLine($"{playeritemsIndex[Playeritem[ArrayVal]]}");
 
+                            Console.SetCursorPosition(0, 31);
+                            Move = Console.ReadKey();
 
-                            if (Playeritem[ArrayVal] == "기본용 양손검")
+                            if (Playeritem[ArrayVal] == "기본용 양손검" || Playeritem[ArrayVal] == "그레이트 소드" ||
+                                Playeritem[ArrayVal] == "정령의 지팡이" || Playeritem[ArrayVal] == "기본용 마법봉" ||
+                                Playeritem[ArrayVal] == "기본용 단검" || Playeritem[ArrayVal] == "날이 잘 갈린 단검")
                             {
                                 Console.SetCursorPosition(33, 23);
 
@@ -4229,43 +5556,9 @@ namespace TextRpg01
                                 }
                             }
 
-                            else if (Playeritem[ArrayVal] == "그레이트 소드")
-                            {
-                                Console.SetCursorPosition(33, 23);
-
-                                Console.WriteLine("장착하시겠습니까?");
-                                Console.SetCursorPosition(33, 24);
-                                Console.WriteLine("왼쪽 입력 : 장착하기, 오른쪽 입력 : 아니요.");
-
-                                Console.SetCursorPosition(0, 31);
-                                Move = Console.ReadKey();
-
-                                switch (Move.Key)
-                                {
-                                    case ConsoleKey.A:
-                                        string temp;
-                                        temp = PlayerWearWeps[0];
-                                        PlayerWearWeps[0] = Playeritem[ArrayVal];
-                                        Playeritem[ArrayVal] = temp;
-
-                                        Console.SetCursorPosition(33, 25);
-                                        Console.WriteLine($"{PlayerWearWeps[0]} 장착 완료되었습니다.");
-
-                                        Console.SetCursorPosition(0, 31);
-                                        Move = Console.ReadKey();
-                                        break;
-
-                                    case ConsoleKey.D:
-                                        Console.SetCursorPosition(33, 25);
-                                        Console.WriteLine($"장착하지 않았습니다.");
-
-                                        Console.SetCursorPosition(0, 31);
-                                        Move = Console.ReadKey();
-                                        break;
-                                }
-                            }
-
-                            else if (Playeritem[ArrayVal] == "기본용 갑옷")
+                            else if (Playeritem[ArrayVal] == "기본용 갑옷" || Playeritem[ArrayVal] == "판금 갑옷" ||
+                                Playeritem[ArrayVal] == "기본용 마법복" || Playeritem[ArrayVal] == "마법 부여 복장" ||
+                                Playeritem[ArrayVal] == "기본용 트레이닝 복장" || Playeritem[ArrayVal] == "위장용 도적 복장")
                             {
                                 Console.SetCursorPosition(33, 23);
 
@@ -4300,78 +5593,9 @@ namespace TextRpg01
                                         break;
                                 }
                             }
-                            else if (Playeritem[ArrayVal] == "판금 갑옷")
-                            {
-                                Console.SetCursorPosition(33, 23);
-
-                                Console.WriteLine("장착하시겠습니까?");
-                                Console.SetCursorPosition(33, 24);
-                                Console.WriteLine("왼쪽 입력 : 장착하기, 오른쪽 입력 : 아니요.");
-
-                                Console.SetCursorPosition(0, 31);
-                                Move = Console.ReadKey();
-
-                                switch (Move.Key)
-                                {
-                                    case ConsoleKey.A:
-                                        string temp;
-                                        temp = PlayerWearWeps[1];
-                                        PlayerWearWeps[1] = Playeritem[ArrayVal];
-                                        Playeritem[ArrayVal] = temp;
-
-                                        Console.SetCursorPosition(33, 25);
-                                        Console.WriteLine($"{PlayerWearWeps[1]} 장착 완료되었습니다.");
-
-                                        Console.SetCursorPosition(0, 31);
-                                        Move = Console.ReadKey();
-                                        break;
-
-                                    case ConsoleKey.D:
-                                        Console.SetCursorPosition(33, 25);
-                                        Console.WriteLine($"장착하지 않았습니다.");
-
-                                        Console.SetCursorPosition(0, 31);
-                                        Move = Console.ReadKey();
-                                        break;
-                                }
-                            }
-                            else if (Playeritem[ArrayVal] == "기본용 전사의 가호")
-                            {
-                                Console.SetCursorPosition(33, 23);
-
-                                Console.WriteLine("장착하시겠습니까?");
-                                Console.SetCursorPosition(33, 24);
-                                Console.WriteLine("왼쪽 입력 : 장착하기, 오른쪽 입력 : 아니요.");
-
-                                Console.SetCursorPosition(0, 31);
-                                Move = Console.ReadKey();
-
-                                switch (Move.Key)
-                                {
-                                    case ConsoleKey.A:
-                                        string temp;
-                                        temp = PlayerWearWeps[2];
-                                        PlayerWearWeps[2] = Playeritem[ArrayVal];
-                                        Playeritem[ArrayVal] = temp;
-
-                                        Console.SetCursorPosition(33, 25);
-                                        Console.WriteLine($"{PlayerWearWeps[2]} 장착 완료되었습니다.");
-
-                                        Console.SetCursorPosition(0, 31);
-                                        Move = Console.ReadKey();
-                                        break;
-
-                                    case ConsoleKey.D:
-                                        Console.SetCursorPosition(33, 25);
-                                        Console.WriteLine($"장착하지 않았습니다.");
-
-                                        Console.SetCursorPosition(0, 31);
-                                        Move = Console.ReadKey();
-                                        break;
-                                }
-                            }
-
-                            else if (Playeritem[ArrayVal] == "숙련된 전사의 가호")
+                            else if (Playeritem[ArrayVal] == "기본용 전사의 가호" || Playeritem[ArrayVal] == "숙련된 전사의 가호" ||
+                                Playeritem[ArrayVal] == "기본용 마법사의 가호" || Playeritem[ArrayVal] == "숙련된 마법사의 가호" ||
+                                Playeritem[ArrayVal] == "기본용 도적의 가호" || Playeritem[ArrayVal] == "숙련된 도적의 가호")
                             {
                                 Console.SetCursorPosition(33, 23);
 
@@ -4424,7 +5648,12 @@ namespace TextRpg01
                             Console.SetCursorPosition(33, 22);
                             Console.WriteLine($"{playeritemsIndex[Playeritem[ArrayVal]]}");
 
-                            if (Playeritem[ArrayVal] == "기본용 양손검")
+                            Console.SetCursorPosition(0, 31);
+                            Move = Console.ReadKey();
+
+                            if (Playeritem[ArrayVal] == "기본용 양손검" || Playeritem[ArrayVal] == "그레이트 소드" ||
+                                Playeritem[ArrayVal] == "정령의 지팡이" || Playeritem[ArrayVal] == "기본용 마법봉" ||
+                                Playeritem[ArrayVal] == "기본용 단검" || Playeritem[ArrayVal] == "날이 잘 갈린 단검")
                             {
                                 Console.SetCursorPosition(33, 23);
 
@@ -4460,43 +5689,9 @@ namespace TextRpg01
                                 }
                             }
 
-                            else if (Playeritem[ArrayVal] == "그레이트 소드")
-                            {
-                                Console.SetCursorPosition(33, 23);
-
-                                Console.WriteLine("장착하시겠습니까?");
-                                Console.SetCursorPosition(33, 24);
-                                Console.WriteLine("왼쪽 입력 : 장착하기, 오른쪽 입력 : 아니요.");
-
-                                Console.SetCursorPosition(0, 31);
-                                Move = Console.ReadKey();
-
-                                switch (Move.Key)
-                                {
-                                    case ConsoleKey.A:
-                                        string temp;
-                                        temp = PlayerWearWeps[0];
-                                        PlayerWearWeps[0] = Playeritem[ArrayVal];
-                                        Playeritem[ArrayVal] = temp;
-
-                                        Console.SetCursorPosition(33, 25);
-                                        Console.WriteLine($"{PlayerWearWeps[0]} 장착 완료되었습니다.");
-
-                                        Console.SetCursorPosition(0, 31);
-                                        Move = Console.ReadKey();
-                                        break;
-
-                                    case ConsoleKey.D:
-                                        Console.SetCursorPosition(33, 25);
-                                        Console.WriteLine($"장착하지 않았습니다.");
-
-                                        Console.SetCursorPosition(0, 31);
-                                        Move = Console.ReadKey();
-                                        break;
-                                }
-                            }
-
-                            else if (Playeritem[ArrayVal] == "기본용 갑옷")
+                            else if (Playeritem[ArrayVal] == "기본용 갑옷" || Playeritem[ArrayVal] == "판금 갑옷" ||
+                                Playeritem[ArrayVal] == "기본용 마법복" || Playeritem[ArrayVal] == "마법 부여 복장" ||
+                                Playeritem[ArrayVal] == "기본용 트레이닝 복장" || Playeritem[ArrayVal] == "위장용 도적 복장")
                             {
                                 Console.SetCursorPosition(33, 23);
 
@@ -4531,78 +5726,9 @@ namespace TextRpg01
                                         break;
                                 }
                             }
-                            else if (Playeritem[ArrayVal] == "판금 갑옷")
-                            {
-                                Console.SetCursorPosition(33, 23);
-
-                                Console.WriteLine("장착하시겠습니까?");
-                                Console.SetCursorPosition(33, 24);
-                                Console.WriteLine("왼쪽 입력 : 장착하기, 오른쪽 입력 : 아니요.");
-
-                                Console.SetCursorPosition(0, 31);
-                                Move = Console.ReadKey();
-
-                                switch (Move.Key)
-                                {
-                                    case ConsoleKey.A:
-                                        string temp;
-                                        temp = PlayerWearWeps[1];
-                                        PlayerWearWeps[1] = Playeritem[ArrayVal];
-                                        Playeritem[ArrayVal] = temp;
-
-                                        Console.SetCursorPosition(33, 25);
-                                        Console.WriteLine($"{PlayerWearWeps[1]} 장착 완료되었습니다.");
-
-                                        Console.SetCursorPosition(0, 31);
-                                        Move = Console.ReadKey();
-                                        break;
-
-                                    case ConsoleKey.D:
-                                        Console.SetCursorPosition(33, 25);
-                                        Console.WriteLine($"장착하지 않았습니다.");
-
-                                        Console.SetCursorPosition(0, 31);
-                                        Move = Console.ReadKey();
-                                        break;
-                                }
-                            }
-                            else if (Playeritem[ArrayVal] == "기본용 전사의 가호")
-                            {
-                                Console.SetCursorPosition(33, 23);
-
-                                Console.WriteLine("장착하시겠습니까?");
-                                Console.SetCursorPosition(33, 24);
-                                Console.WriteLine("왼쪽 입력 : 장착하기, 오른쪽 입력 : 아니요.");
-
-                                Console.SetCursorPosition(0, 31);
-                                Move = Console.ReadKey();
-
-                                switch (Move.Key)
-                                {
-                                    case ConsoleKey.A:
-                                        string temp;
-                                        temp = PlayerWearWeps[2];
-                                        PlayerWearWeps[2] = Playeritem[ArrayVal];
-                                        Playeritem[ArrayVal] = temp;
-
-                                        Console.SetCursorPosition(33, 25);
-                                        Console.WriteLine($"{PlayerWearWeps[2]} 장착 완료되었습니다.");
-
-                                        Console.SetCursorPosition(0, 31);
-                                        Move = Console.ReadKey();
-                                        break;
-
-                                    case ConsoleKey.D:
-                                        Console.SetCursorPosition(33, 25);
-                                        Console.WriteLine($"장착하지 않았습니다.");
-
-                                        Console.SetCursorPosition(0, 31);
-                                        Move = Console.ReadKey();
-                                        break;
-                                }
-                            }
-
-                            else if (Playeritem[ArrayVal] == "숙련된 전사의 가호")
+                            else if (Playeritem[ArrayVal] == "기본용 전사의 가호" || Playeritem[ArrayVal] == "숙련된 전사의 가호" ||
+                                Playeritem[ArrayVal] == "기본용 마법사의 가호" || Playeritem[ArrayVal] == "숙련된 마법사의 가호" ||
+                                Playeritem[ArrayVal] == "기본용 도적의 가호" || Playeritem[ArrayVal] == "숙련된 도적의 가호")
                             {
                                 Console.SetCursorPosition(33, 23);
 
@@ -4956,12 +6082,44 @@ namespace TextRpg01
                         {
                             if (ArrowY == 12)
                             {
-                                weps = new warrior4();
+                                if (PlayerOccupation == "전사")
+                                {
+                                    weps = new Warrior4();
+
+                                }
+                                else if (PlayerOccupation == "마법사")
+                                {
+                                    weps = new Magic4();
+
+                                }
+                                else if (PlayerOccupation == "도적")
+                                {
+                                    weps = new Rogue4();
+
+                                }
+                                else { /* Do Nothing */}
                             }
                             else if (ArrowY == 13)
                             {
-                                weps = new warrior6();
+
+                                if (PlayerOccupation == "전사")
+                                {
+                                    weps = new Warrior6();
+
+                                }
+                                else if (PlayerOccupation == "마법사")
+                                {
+                                    weps = new Magic6();
+
+                                }
+                                else if (PlayerOccupation == "도적")
+                                {
+                                    weps = new Rogue6();
+
+                                }
+                                else { /* Do Nothing */}
                             }
+                            else { /* Do Nothing */}
 
 
                             Console.SetCursorPosition(33, 22);
@@ -5024,6 +6182,25 @@ namespace TextRpg01
                                             PlayeritemVal[11]++;
 
                                         }
+                                        else if (weps.Wepitem() == "정령의 지팡이")
+                                        {
+                                            PlayeritemVal[15]++;
+
+                                        }
+                                        else if (weps.Wepitem() == "숙련된 마법사의 가호")
+                                        {
+                                            PlayeritemVal[17]++;
+
+                                        }
+                                        else if (weps.Wepitem() == "날이 잘 갈린 단검")
+                                        {
+                                            PlayeritemVal[21]++;
+                                        }
+                                        else if (weps.Wepitem() == "숙련된 도적의 가호")
+                                        {
+                                            PlayeritemVal[23]++;
+                                        }
+                                        else { /* Do Nothing */}
 
 
                                         Console.SetCursorPosition(33, 25);
@@ -5073,9 +6250,24 @@ namespace TextRpg01
                         {
                             if (ArrowY == 12)
                             {
-                                weps = new warrior5();
-                            }
+                                if (PlayerOccupation == "전사")
+                                {
+                                    weps = new Warrior5();
 
+                                }
+                                else if (PlayerOccupation == "마법사")
+                                {
+                                    weps = new Magic5();
+
+                                }
+                                else if (PlayerOccupation == "도적")
+                                {
+                                    weps = new Rogue5();
+
+                                }
+                                else { /* Do Nothing */}
+                            }
+                            else { /* Do Nothing */}
 
                             Console.SetCursorPosition(33, 22);
                             Console.WriteLine($"{playeritemsIndex[StoreVal[ArrayVal]]}");
@@ -5131,8 +6323,15 @@ namespace TextRpg01
                                         {
                                             PlayeritemVal[10]++;
                                         }
-
-
+                                        else if (weps.Wepitem() == "마법 부여 복장")
+                                        {
+                                            PlayeritemVal[16]++;
+                                        }
+                                        else if (weps.Wepitem() == "위장용 도적 복장")
+                                        {
+                                            PlayeritemVal[22]++;
+                                        }
+                                        else { /* Do Nothing */}
 
                                         Console.SetCursorPosition(33, 25);
                                         Console.WriteLine($"{weps.Wepitem()}. 구매에 성공했습니다.");
@@ -5200,26 +6399,73 @@ namespace TextRpg01
         public void StoreWepSet()
         {
 
-            
-            weps = new warrior1();
-            playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
-            weps = new warrior2();
-            playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
+            if (PlayerOccupation == "전사")
+            {
+                weps = new Warrior1();
+                playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
+                weps = new Warrior2();
+                playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
 
-            weps = new warrior3();
-            playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
+                weps = new Warrior3();
+                playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
 
 
-            weps = new warrior4();
-            StoreVal.Add(weps.Wepitem());
-            playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
+                weps = new Warrior4();
+                StoreVal.Add(weps.Wepitem());
+                playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
 
-            weps = new warrior5();
-            StoreVal.Add(weps.Wepitem());
-            playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
-            weps = new warrior6();
-            StoreVal.Add(weps.Wepitem());
-            playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
+                weps = new Warrior5();
+                StoreVal.Add(weps.Wepitem());
+                playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
+                weps = new Warrior6();
+                StoreVal.Add(weps.Wepitem());
+                playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
+            }
+            else if (PlayerOccupation == "마법사")
+            {
+                weps = new Magic1();
+                playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
+                weps = new Magic2();
+                playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
+
+                weps = new Magic3();
+                playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
+
+
+                weps = new Magic4();
+                StoreVal.Add(weps.Wepitem());
+                playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
+
+                weps = new Magic5();
+                StoreVal.Add(weps.Wepitem());
+                playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
+                weps = new Magic6();
+                StoreVal.Add(weps.Wepitem());
+                playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
+            }
+            else if (PlayerOccupation == "도적")
+            {
+                weps = new Rogue1();
+                playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
+                weps = new Rogue2();
+                playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
+
+                weps = new Rogue3();
+                playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
+
+
+                weps = new Rogue4();
+                StoreVal.Add(weps.Wepitem());
+                playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
+
+                weps = new Rogue5();
+                StoreVal.Add(weps.Wepitem());
+                playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
+                weps = new Rogue6();
+                StoreVal.Add(weps.Wepitem());
+                playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
+            }
+            else { /* Do Nothing */}
         }
 
     } // class Games
@@ -5265,9 +6511,9 @@ namespace TextRpg01
 
     }
 
-    class warrior1 : Weps
+    class Warrior1 : Weps
     {
-        public warrior1()
+        public Warrior1()
         {
             
             this.wepdamage = 5;
@@ -5280,9 +6526,9 @@ namespace TextRpg01
 
     }
 
-    class warrior2 : Weps
+    class Warrior2 : Weps
     {
-        public warrior2()
+        public Warrior2()
         {
 
             this.wepdamage = 0;
@@ -5295,9 +6541,9 @@ namespace TextRpg01
 
     }
 
-    class warrior3 : Weps
+    class Warrior3 : Weps
     {
-        public warrior3()
+        public Warrior3()
         {
 
             this.wepdamage = 3;
@@ -5311,12 +6557,12 @@ namespace TextRpg01
     }
 
 
-    class warrior4 : Weps
+    class Warrior4 : Weps
     {
-        public warrior4()
+        public Warrior4()
         {
 
-            this.wepdamage = 15;
+            this.wepdamage = 20;
             this.wepdefence = 0;
             this.wepitem = "그레이트 소드";
             this.wepitemIndex = "숙련자 전사용 양손검";
@@ -5326,13 +6572,13 @@ namespace TextRpg01
 
     }
 
-    class warrior5 : Weps
+    class Warrior5 : Weps
     {
-        public warrior5()
+        public Warrior5()
         {
 
             this.wepdamage = 0;
-            this.wepdefence = 15;
+            this.wepdefence = 20;
             this.wepitem = "판금 갑옷";
             this.wepitemIndex = "판금이 덮입혀진 갑옷";
             this.wepgold = 100;
@@ -5341,13 +6587,13 @@ namespace TextRpg01
 
     }
 
-    class warrior6 : Weps
+    class Warrior6 : Weps
     {
-        public warrior6()
+        public Warrior6()
         {
 
-            this.wepdamage = 8;
-            this.wepdefence = 8;
+            this.wepdamage = 10;
+            this.wepdefence = 10;
             this.wepitem = "숙련된 전사의 가호";
             this.wepitemIndex = "숙련된 전사의 부적";
             this.wepgold = 100;
@@ -5356,6 +6602,187 @@ namespace TextRpg01
 
     }
 
+    class Magic1 : Weps
+    {
+        public Magic1()
+        {
+
+            this.wepdamage = 5;
+            this.wepdefence = 0;
+            this.wepitem = "기본용 마법봉";
+            this.wepitemIndex = "초보자용 마법사 지팡이";
+            this.wepgold = 5;
+            this.wepsoldgold = 5;
+        }
+
+    }
+
+    class Magic2 : Weps
+    {
+        public Magic2()
+        {
+
+            this.wepdamage = 0;
+            this.wepdefence = 5;
+            this.wepitem = "기본용 마법복";
+            this.wepitemIndex = "초보자 마법사용 복장";
+            this.wepgold = 5;
+            this.wepsoldgold = 5;
+        }
+
+    }
+
+    class Magic3 : Weps
+    {
+        public Magic3()
+        {
+
+            this.wepdamage = 3;
+            this.wepdefence = 3;
+            this.wepitem = "기본용 마법사의 가호";
+            this.wepitemIndex = "초보자용 마법사의 부적";
+            this.wepgold = 5;
+            this.wepsoldgold = 5;
+        }
+
+    }
+
+
+    class Magic4 : Weps
+    {
+        public Magic4()
+        {
+
+            this.wepdamage = 20;
+            this.wepdefence = 0;
+            this.wepitem = "정령의 지팡이";
+            this.wepitemIndex = "숙련자 마법사용 지팡이";
+            this.wepgold = 100;
+            this.wepsoldgold = 10;
+        }
+
+    }
+
+    class Magic5 : Weps
+    {
+        public Magic5()
+        {
+
+            this.wepdamage = 0;
+            this.wepdefence = 20;
+            this.wepitem = "마법 부여 복장";
+            this.wepitemIndex = "마법이 부여된 마법사용 복장";
+            this.wepgold = 100;
+            this.wepsoldgold = 10;
+        }
+
+    }
+
+    class Magic6 : Weps
+    {
+        public Magic6()
+        {
+
+            this.wepdamage = 10;
+            this.wepdefence = 10;
+            this.wepitem = "숙련된 마법사의 가호";
+            this.wepitemIndex = "숙련된 마법사의 부적";
+            this.wepgold = 100;
+            this.wepsoldgold = 10;
+        }
+
+    }
+
+    class Rogue1 : Weps
+    {
+        public Rogue1()
+        {
+
+            this.wepdamage = 5;
+            this.wepdefence = 0;
+            this.wepitem = "기본용 단검";
+            this.wepitemIndex = "초보자용 도적 무기";
+            this.wepgold = 5;
+            this.wepsoldgold = 5;
+        }
+
+    }
+
+    class Rogue2 : Weps
+    {
+        public Rogue2()
+        {
+
+            this.wepdamage = 0;
+            this.wepdefence = 5;
+            this.wepitem = "기본용 트레이닝 복장";
+            this.wepitemIndex = "초보자 도적용 복장";
+            this.wepgold = 5;
+            this.wepsoldgold = 5;
+        }
+
+    }
+
+    class Rogue3 : Weps
+    {
+        public Rogue3()
+        {
+
+            this.wepdamage = 3;
+            this.wepdefence = 3;
+            this.wepitem = "기본용 도적의 가호";
+            this.wepitemIndex = "초보자용 도적의 부적";
+            this.wepgold = 5;
+            this.wepsoldgold = 5;
+        }
+
+    }
+
+
+    class Rogue4 : Weps
+    {
+        public Rogue4()
+        {
+
+            this.wepdamage = 20;
+            this.wepdefence = 0;
+            this.wepitem = "날이 잘 갈린 단검";
+            this.wepitemIndex = "숙련자 도적용 지팡이";
+            this.wepgold = 100;
+            this.wepsoldgold = 10;
+        }
+
+    }
+
+    class Rogue5 : Weps
+    {
+        public Rogue5()
+        {
+
+            this.wepdamage = 0;
+            this.wepdefence = 20;
+            this.wepitem = "위장용 도적 복장";
+            this.wepitemIndex = "주위 풍경과 비슷한 도적용 복장";
+            this.wepgold = 100;
+            this.wepsoldgold = 10;
+        }
+
+    }
+
+    class Rogue6 : Weps
+    {
+        public Rogue6()
+        {
+
+            this.wepdamage = 10;
+            this.wepdefence = 10;
+            this.wepitem = "숙련된 도적의 가호";
+            this.wepitemIndex = "숙련된 도적의 부적";
+            this.wepgold = 100;
+            this.wepsoldgold = 10;
+        }
+
+    }
 
 
     // 몬스터 클래스
@@ -5369,6 +6796,7 @@ namespace TextRpg01
         protected string monsteritemIndex;
         protected int monstergold;
         protected string monsterface;
+        protected string eliteskill;
 
         public void MonsterAtk()
         {
@@ -5413,6 +6841,12 @@ namespace TextRpg01
         {
             return this.monsterface;
         }
+
+        public string Eliteskill()
+        {
+            return this.eliteskill;
+        }
+
     } // class Monster
 
     class Wolf : Monster
@@ -5430,13 +6864,32 @@ namespace TextRpg01
         }
     }
 
+    class Alraune : Monster
+    {
+        public Alraune()
+        {
+            this.monstername = "알라우네";
+            this.monsterhp = 5;
+            this.monsterdamage = 15;
+            this.monsterdefence = 13;
+            this.monsteritem = "알라우네의 보석";
+            this.monsteritemIndex = "알라우네의 힘이 담긴 보석. 유물로도 취급된다.";
+            this.monstergold = 100;
+            this.monsterface = "＠ㅁ＠";
+            this.eliteskill = "알라우네의 분노";
+        }
+    }
+
+
+
+
     class Golem : Monster
     {
         public Golem()
         {
             this.monstername = "유적 골렘";
             this.monsterhp = 5;
-            this.monsterdamage = 15;
+            this.monsterdamage = 14;
             this.monsterdefence = 15;
             this.monsteritem = "유적 골렘의 파편";
             this.monsteritemIndex = "세월이 느껴지는 골렘의 파편.";
@@ -5445,5 +6898,22 @@ namespace TextRpg01
         }
     }
 
+
+
+    class SeaBoss : Monster
+    {
+        public SeaBoss()
+        {
+            this.monstername = "악마 바알";
+            this.monsterhp = 5;
+            this.monsterdamage = 20;
+            this.monsterdefence = 15;
+            this.monsteritem = "바알의 보석";
+            this.monsteritemIndex = "바알의 힘이 담긴 보석. 악한 기운이 느껴진다.";
+            this.monstergold = 200;
+            this.monsterface = "※ㅁ※";
+            this.eliteskill = "바알의 분노";
+        }
+    }
 
 }
