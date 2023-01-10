@@ -247,7 +247,8 @@ namespace TextRpg01
                     PlayerBattleVal[2] = (StatusValues[5] + (int)((StatusValues[1] + StatusValues[3]) / 2));
                 }
                 else { /* Do Nothing */ }
-                PlayeritemVal[0] = 300;
+
+                PlayeritemVal[0] = 150;
 
                 //마을, 모험, 아이템, 끝내기 선택지
                 ChoiceActSet();
@@ -381,7 +382,26 @@ namespace TextRpg01
             }
             Console.WriteLine();
 
-            
+            Console.SetCursorPosition(4, 8);
+            Console.WriteLine("               ^5P7        ^#5                         :^                      "); 
+            Console.SetCursorPosition(4, 9);
+
+            Console.WriteLine("             J#G@P   .~77^B@!!~   !~ .~77~  ^!^!7!. ~Y@B~ ~~  :!^ ^!^!! .~77^  ");
+            Console.SetCursorPosition(4, 10);
+
+            Console.WriteLine("           ~B#~7@P  ?#P??&@?^@#.:G#?Y#PJB@7:&@J7B@J 5@B?!J@5  B@!:&@5??5#PJB@!");
+            Console.SetCursorPosition(4, 11);
+
+            Console.WriteLine("         .Y@&GPB@G J@Y  7@P :@B?&5:P@PJJY5^G@7 :&#:.B&~ ~@G. Y@J G@7  G@5JJ55: ");
+            Console.SetCursorPosition(4, 12);
+
+            Console.WriteLine("        ^G#7...7@G.Y@GJ5@B: :#&B!  P&PJY7 ?@Y  G&! 7@#? J@B?5@G.?@Y  .P&PJY! ");
+            Console.SetCursorPosition(4, 13);
+
+            Console.WriteLine("        .^.     ::  :^^.:.   ::.    :^^:. ::.  ::   :^:  :^:::. ::.    :~^:.");
+
+            Console.SetCursorPosition(0, 31);
+
             ConsoleKeyInfo Move;
 
             Move = Console.ReadKey();
@@ -1994,7 +2014,152 @@ namespace TextRpg01
                         gameboard[ArrowY, ArrowX] = 2;
                     }
                     break;
+                case ConsoleKey.UpArrow:
+                    if (ArrowY == 2 || gameboard[ArrowY - 1, ArrowX] == -5)
+                    {
+                        if (gameboard[ArrowY - 1, ArrowX] == -5)
+                        {
+                            gameboard[ArrowY, ArrowX] = -5;
+                            ArrowY--;
+                            gameboard[ArrowY, ArrowX] = 2;
+                        }
+                        else { /* Do Nothing */}
+                    }
+                    else if (gameboard[ArrowY - 1, ArrowX] == -2 || gameboard[ArrowY - 1, ArrowX] == 20) { /* Do Nothing */ }
+                    else if (gameboard[ArrowY - 1, ArrowX] == 10)
+                    {
+                        // 상점 오픈
+                        GameboardClear();
+                        StoreCheckout = false;
+                        StoreSet();
 
+                        while (StoreCheckout == false)
+                        {
+                            Console.SetCursorPosition(0, 0);
+
+                            Store();
+                        }
+
+                    }
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowY--;
+                        gameboard[ArrowY, ArrowX] = 2;
+                    }
+
+                    break;
+                case ConsoleKey.LeftArrow:
+                    if (ArrowX == 2 || gameboard[ArrowY, ArrowX - 1] == -5)
+                    {
+                        if (gameboard[ArrowY, ArrowX - 1] == -5)
+                        {
+                            if (ArrowX == 17 + 1)
+                            {
+                                gameboard[ArrowY, ArrowX] = -1;
+                                ArrowX--;
+                                gameboard[ArrowY, ArrowX] = 2;
+                            }
+                            else
+                            {
+                                gameboard[ArrowY, ArrowX] = -5;
+                                ArrowX--;
+                                gameboard[ArrowY, ArrowX] = 2;
+                            }
+                        }
+
+                        else { /* Do Nothing */}
+                    }
+                    else if (gameboard[ArrowY, ArrowX - 1] == -2 || gameboard[ArrowY, ArrowX - 1] == 20) { /* Do Nothing */ }
+                    else if ((gameboard[ArrowY + 1, ArrowX] == -5 || gameboard[ArrowY - 1, ArrowX] == -5) && gameboard[ArrowY, ArrowX - 1] == -1)
+                    {
+                        gameboard[ArrowY, ArrowX] = -5;
+                        ArrowX--;
+                        gameboard[ArrowY, ArrowX] = 2;
+
+                    }
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowX--;
+                        gameboard[ArrowY, ArrowX] = 2;
+                    }
+                    break;
+
+                case ConsoleKey.DownArrow:
+
+                    if (ArrowY == 23 || gameboard[ArrowY + 1, ArrowX] == -5)
+                    {
+
+                        if (ArrowY == 23 && (ArrowX == 14 || ArrowX == 15 || ArrowX == 16))
+                        {
+                            // 마을, 모험, 아이템, 끝내기 선택지
+                            ChoiceActSet();
+
+                            while (ChoiceCheck == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+                                ChoiceAct();
+
+                            }
+                        }
+                        else if (gameboard[ArrowY + 1, ArrowX] == -5)
+                        {
+                            gameboard[ArrowY, ArrowX] = -5;
+                            ArrowY++;
+                            gameboard[ArrowY, ArrowX] = 2;
+                        }
+
+                    }
+                    else if (gameboard[ArrowY + 1, ArrowX] == -2 || gameboard[ArrowY + 1, ArrowX] == 20) { /* Do Nothing */ }
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowY++;
+                        gameboard[ArrowY, ArrowX] = 2;
+                    }
+                    break;
+
+                case ConsoleKey.RightArrow:
+                    if (ArrowX == 28 || gameboard[ArrowY, ArrowX + 1] == -5)
+                    {
+                        if (gameboard[ArrowY, ArrowX + 1] == -5)
+                        {
+
+                            if (ArrowX == 12)
+                            {
+                                gameboard[ArrowY, ArrowX] = -1;
+                                ArrowX++;
+                                gameboard[ArrowY, ArrowX] = 2;
+                            }
+                            else
+                            {
+
+                                gameboard[ArrowY, ArrowX] = -5;
+                                ArrowX++;
+                                gameboard[ArrowY, ArrowX] = 2;
+                            }
+                        }
+                    }
+                    else if (gameboard[ArrowY, ArrowX + 1] == -2 || gameboard[ArrowY, ArrowX + 1] == 20) { /* Do Nothing */ }
+                    else if ((gameboard[ArrowY + 1, ArrowX] == -5 || gameboard[ArrowY - 1, ArrowX] == -5) && gameboard[ArrowY, ArrowX + 1] == -1)
+                    {
+                        gameboard[ArrowY, ArrowX] = -5;
+                        ArrowX++;
+                        gameboard[ArrowY, ArrowX] = 2;
+
+                    }
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowX++;
+                        gameboard[ArrowY, ArrowX] = 2;
+                    }
+
+                    break;
+                default:
+                    /* Do Nothing */
+                    break;
 
             }
 
@@ -2167,6 +2332,27 @@ namespace TextRpg01
             DownSet2();
             DownSet3();
 
+            Console.SetCursorPosition(44, 7);
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine("[산]");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            Console.SetCursorPosition(25, 13);
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.WriteLine("[바다]");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            Console.SetCursorPosition(61, 13);
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.WriteLine("[동굴]");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            Console.SetCursorPosition(41, 19);
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("[돌아가기]");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            Console.SetCursorPosition(0, 31);
             ConsoleKeyInfo Move;
 
             Move = Console.ReadKey();
@@ -2286,8 +2472,123 @@ namespace TextRpg01
                         gameboard[ArrowY, ArrowX] = 2;
                     }
                     break;
+                case ConsoleKey.UpArrow:
+                    if (ArrowY == 2 || gameboard[ArrowY - 1, ArrowX] == -2 ||
+                        gameboard[ArrowY - 1, ArrowX] == -3)
+                    {
+                        if (gameboard[ArrowY - 1, ArrowX] == -3)
+                        {
+                            // 산으로 가기
+                            AlrauneHitChk = false;
+                            GameboardClear();
+                            AdventureTreeSet();
+                            MonsterSettingClear();
+                            MonsterCreateSet();
 
-                
+                            while (AdventureTreeCheckout == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+                                AdventureTree();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowY--;
+                        gameboard[ArrowY, ArrowX] = 2;
+                    }
+
+                    break;
+                case ConsoleKey.LeftArrow:
+                    if (ArrowX == 2 || gameboard[ArrowY, ArrowX - 1] == -2 ||
+                        gameboard[ArrowY, ArrowX - 1] == -3)
+                    {
+                        if (gameboard[ArrowY, ArrowX - 1] == -3)
+                        {
+                            // 바다로 가기
+                            GameboardClear();
+
+                            SeaCheck = false;
+                            PlayerSeaWalkCount = 0;
+                            AdventureSeaSet();
+
+                            while (SeaCheck == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+                                AdventureSea();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowX--;
+                        gameboard[ArrowY, ArrowX] = 2;
+                    }
+                    break;
+
+                case ConsoleKey.DownArrow:
+
+                    if (ArrowY == 23 || gameboard[ArrowY + 1, ArrowX] == -2 ||
+                        gameboard[ArrowY + 1, ArrowX] == -3)
+                    {
+
+                        if (gameboard[ArrowY + 1, ArrowX] == -3)
+                        {
+                            // 마을, 모험, 아이템, 끝내기 선택지
+                            GameboardClear();
+
+                            ChoiceActSet();
+
+                            while (ChoiceCheck == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+                                ChoiceAct();
+
+                            }
+                        }
+                    }
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowY++;
+                        gameboard[ArrowY, ArrowX] = 2;
+                    }
+                    break;
+
+                case ConsoleKey.RightArrow:
+                    if (ArrowX == 28 || gameboard[ArrowY, ArrowX + 1] == -2)
+                    {
+                        /* Do Nothing */
+                    }
+                    else if (gameboard[ArrowY, ArrowX + 1] == -3)
+                    {
+                        // 동굴로 가기
+                        GameboardClear();
+                        CavetriggChk = false;
+                        CaveCheckout = false;
+                        AdventureCaveSet();
+                        MonsterSettingClear();
+                        MonsterCreateSet();
+                        while (CaveCheckout == false)
+                        {
+                            Console.SetCursorPosition(0, 0);
+
+                            AdventureCave();
+                        }
+                    }
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowX++;
+                        gameboard[ArrowY, ArrowX] = 2;
+                    }
+                    break;
+                default:
+                    /* Do Nothing */
+                    break;
+
 
             }
 
@@ -3033,7 +3334,296 @@ namespace TextRpg01
                     gameboard[ArrowY, ArrowX] = 2;
 
                     break;
+                case ConsoleKey.UpArrow:
+                    if (ArrowY == 2 || gameboard[ArrowY - 1, ArrowX] == -2 ||
+                        gameboard[ArrowY - 1, ArrowX] == 10)
+                    {
+                        if (gameboard[ArrowY - 1, ArrowX] == 10)
+                        {
 
+                            BattleCheck = false;
+                            BattleONCheck = false;
+                            Battlemonsterturn = false;
+                            SavePlayerY = ArrowY;
+                            SavePlayerX = ArrowX;
+
+                            gamemonsterboard[ArrowY - 1, ArrowX] = 0;
+                            monster = new SeaBoss();
+
+                            GameboardClear();
+                            PlayerBattleVal[0] = 5;
+                            MonsterBattleVal[0] = monster.Monsterhp();
+                            MonsterBattleVal[1] = monster.Monsterdamage();
+                            MonsterBattleVal[2] = monster.Monsterdefence();
+
+                            BattleSet();
+
+                            while (BattleCheck == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+                                Battle();
+
+                            }
+
+                            GameboardClear();
+                            AdventureSeaSet();
+
+                            gameboard[ArrowY, ArrowX] = -1;
+                            ArrowY = SavePlayerY;
+                            ArrowX = SavePlayerX;
+                            gameboard[ArrowY, ArrowX] = 2;
+
+                        }
+                    }
+                    else if (gameboard[ArrowY - 1, ArrowX] == -10)
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowY = 13;
+                        ArrowX = 28;
+                        gameboard[ArrowY, ArrowX] = 2;
+
+                    }
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowY--;
+                        gameboard[ArrowY, ArrowX] = 2;
+                    }
+                    SavePlayerY = ArrowY;
+                    SavePlayerX = ArrowX;
+
+                    PlayerSeaWalkCount++;
+                    GameboardClear();
+                    AdventureSeaSet();
+
+                    gameboard[ArrowY, ArrowX] = -1;
+                    ArrowY = SavePlayerY;
+                    ArrowX = SavePlayerX;
+                    gameboard[ArrowY, ArrowX] = 2;
+                    break;
+                case ConsoleKey.LeftArrow:
+                    if (ArrowX == 2 || gameboard[ArrowY, ArrowX - 1] == -2 || gameboard[ArrowY, ArrowX - 1] == 10)
+                    {
+                        if (gameboard[ArrowY, ArrowX - 1] == 10)
+                        {
+
+                            BattleCheck = false;
+                            BattleONCheck = false;
+                            Battlemonsterturn = false;
+                            SavePlayerY = ArrowY;
+                            SavePlayerX = ArrowX;
+
+                            gamemonsterboard[ArrowY, ArrowX - 1] = 0;
+                            monster = new SeaBoss();
+
+                            GameboardClear();
+                            PlayerBattleVal[0] = 5;
+                            MonsterBattleVal[0] = monster.Monsterhp();
+                            MonsterBattleVal[1] = monster.Monsterdamage();
+                            MonsterBattleVal[2] = monster.Monsterdefence();
+
+                            BattleSet();
+
+                            while (BattleCheck == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+                                Battle();
+
+                            }
+
+                            GameboardClear();
+                            AdventureSeaSet();
+
+                            gameboard[ArrowY, ArrowX] = -1;
+                            ArrowY = SavePlayerY;
+                            ArrowX = SavePlayerX;
+                            gameboard[ArrowY, ArrowX] = 2;
+                        }
+
+                    }
+                    else if (gameboard[ArrowY, ArrowX - 1] == -10)
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowY = 13;
+                        ArrowX = 28;
+                        gameboard[ArrowY, ArrowX] = 2;
+                    }
+
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowX--;
+                        gameboard[ArrowY, ArrowX] = 2;
+
+                    }
+                    SavePlayerY = ArrowY;
+                    SavePlayerX = ArrowX;
+
+                    PlayerSeaWalkCount++;
+                    GameboardClear();
+                    AdventureSeaSet();
+
+                    gameboard[ArrowY, ArrowX] = -1;
+                    ArrowY = SavePlayerY;
+                    ArrowX = SavePlayerX;
+                    gameboard[ArrowY, ArrowX] = 2;
+                    break;
+
+                case ConsoleKey.DownArrow:
+
+                    if (ArrowY == 23 || gameboard[ArrowY + 1, ArrowX] == -2 || gameboard[ArrowY + 1, ArrowX] == 10)
+                    {
+
+                        if (gameboard[ArrowY + 1, ArrowX] == 10)
+                        {
+
+                            BattleCheck = false;
+                            BattleONCheck = false;
+                            Battlemonsterturn = false;
+                            SavePlayerY = ArrowY;
+                            SavePlayerX = ArrowX;
+
+                            gamemonsterboard[ArrowY + 1, ArrowX] = 0;
+                            monster = new SeaBoss();
+
+                            GameboardClear();
+                            PlayerBattleVal[0] = 5;
+                            MonsterBattleVal[0] = monster.Monsterhp();
+                            MonsterBattleVal[1] = monster.Monsterdamage();
+                            MonsterBattleVal[2] = monster.Monsterdefence();
+
+                            BattleSet();
+
+                            while (BattleCheck == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+                                Battle();
+
+                            }
+
+                            GameboardClear();
+                            AdventureSeaSet();
+
+                            gameboard[ArrowY, ArrowX] = -1;
+                            ArrowY = SavePlayerY;
+                            ArrowX = SavePlayerX;
+                            gameboard[ArrowY, ArrowX] = 2;
+                        }
+
+                    }
+                    else if (gameboard[ArrowY + 1, ArrowX] == -10)
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowY = 13;
+                        ArrowX = 28;
+                        gameboard[ArrowY, ArrowX] = 2;
+
+                    }
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowY++;
+                        gameboard[ArrowY, ArrowX] = 2;
+
+                    }
+                    SavePlayerY = ArrowY;
+                    SavePlayerX = ArrowX;
+
+                    PlayerSeaWalkCount++;
+                    GameboardClear();
+                    AdventureSeaSet();
+
+                    gameboard[ArrowY, ArrowX] = -1;
+                    ArrowY = SavePlayerY;
+                    ArrowX = SavePlayerX;
+                    gameboard[ArrowY, ArrowX] = 2;
+                    break;
+
+                case ConsoleKey.RightArrow:
+                    if (ArrowX == 28 || gameboard[ArrowY, ArrowX + 1] == -2 || gameboard[ArrowY, ArrowX + 1] == 10)
+                    {
+                        if (gameboard[ArrowY, ArrowX + 1] == 10)
+                        {
+
+                            BattleCheck = false;
+                            BattleONCheck = false;
+                            Battlemonsterturn = false;
+                            SavePlayerY = ArrowY;
+                            SavePlayerX = ArrowX;
+
+                            gamemonsterboard[ArrowY, ArrowX + 1] = 0;
+                            monster = new SeaBoss();
+
+                            GameboardClear();
+                            PlayerBattleVal[0] = 5;
+                            MonsterBattleVal[0] = monster.Monsterhp();
+                            MonsterBattleVal[1] = monster.Monsterdamage();
+                            MonsterBattleVal[2] = monster.Monsterdefence();
+
+                            BattleSet();
+
+                            while (BattleCheck == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+                                Battle();
+
+                            }
+
+                            GameboardClear();
+                            AdventureSeaSet();
+
+                            gameboard[ArrowY, ArrowX] = -1;
+                            ArrowY = SavePlayerY;
+                            ArrowX = SavePlayerX;
+                            gameboard[ArrowY, ArrowX] = 2;
+
+                        }
+                        else if (ArrowY == 12 || ArrowY == 13 || ArrowY == 14)
+                        {
+                            // 모험 떠나기
+                            // 모험 구현
+                            GameboardClear();
+                            AdventureCheckout = false;
+                            AdventureSet();
+                            while (AdventureCheckout == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+
+                                Adventure();
+                            }
+                        }
+                    }
+                    else if (gameboard[ArrowY, ArrowX + 1] == -10)
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowY = 13;
+                        ArrowX = 28;
+                        gameboard[ArrowY, ArrowX] = 2;
+
+                    }
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowX++;
+                        gameboard[ArrowY, ArrowX] = 2;
+
+                    }
+                    SavePlayerY = ArrowY;
+                    SavePlayerX = ArrowX;
+
+                    PlayerSeaWalkCount++;
+                    GameboardClear();
+                    AdventureSeaSet();
+
+                    gameboard[ArrowY, ArrowX] = -1;
+                    ArrowY = SavePlayerY;
+                    ArrowX = SavePlayerX;
+                    gameboard[ArrowY, ArrowX] = 2;
+
+                    break;
+                default:
+                    /* Do Nothing */
+                    break;
             }
 
 
@@ -3426,6 +4016,7 @@ namespace TextRpg01
             DownSet2();
             DownSet3();
 
+            Console.SetCursorPosition(0, 31);
             ConsoleKeyInfo Move;
 
             Move = Console.ReadKey();
@@ -3662,6 +4253,239 @@ namespace TextRpg01
                         gameboard[ArrowY, ArrowX] = 2;
                     }
                     break;
+                case ConsoleKey.UpArrow:
+                    if (ArrowY == 2 || gameboard[ArrowY - 1, ArrowX] == -2 ||
+                        gameboard[ArrowY - 1, ArrowX] == 10)
+                    {
+                        if (gameboard[ArrowY - 1, ArrowX] == 10)
+                        {
+
+                            BattleCheck = false;
+                            BattleONCheck = false;
+                            Battlemonsterturn = false;
+                            SavePlayerY = ArrowY;
+                            SavePlayerX = ArrowX;
+
+                            gamemonsterboard[ArrowY - 1, ArrowX] = 0;
+                            monster = new Golem();
+
+                            GameboardClear();
+                            PlayerBattleVal[0] = 5;
+                            MonsterBattleVal[0] = monster.Monsterhp();
+                            MonsterBattleVal[1] = monster.Monsterdamage();
+                            MonsterBattleVal[2] = monster.Monsterdefence();
+
+                            BattleSet();
+
+                            while (BattleCheck == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+                                Battle();
+
+                            }
+
+                            GameboardClear();
+                            AdventureCaveSet();
+                            MonsterReSetting();
+
+                            gameboard[ArrowY, ArrowX] = -1;
+                            ArrowY = SavePlayerY;
+                            ArrowX = SavePlayerX;
+                            gameboard[ArrowY, ArrowX] = 2;
+                        }
+                    }
+                    else if (gameboard[ArrowY - 1, ArrowX] == -10) { /* Do Nothing */ }
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowY--;
+                        gameboard[ArrowY, ArrowX] = 2;
+                    }
+
+                    break;
+                case ConsoleKey.LeftArrow:
+                    if (ArrowX == 2 || gameboard[ArrowY, ArrowX - 1] == -2 || gameboard[ArrowY, ArrowX - 1] == 10)
+                    {
+                        if (gameboard[ArrowY, ArrowX - 1] == 10)
+                        {
+
+                            BattleCheck = false;
+                            BattleONCheck = false;
+                            Battlemonsterturn = false;
+                            SavePlayerY = ArrowY;
+                            SavePlayerX = ArrowX;
+
+                            gamemonsterboard[ArrowY, ArrowX - 1] = 0;
+                            monster = new Golem();
+
+                            GameboardClear();
+                            PlayerBattleVal[0] = 5;
+                            MonsterBattleVal[0] = monster.Monsterhp();
+                            MonsterBattleVal[1] = monster.Monsterdamage();
+                            MonsterBattleVal[2] = monster.Monsterdefence();
+
+                            BattleSet();
+
+                            while (BattleCheck == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+                                Battle();
+
+                            }
+
+                            GameboardClear();
+                            AdventureCaveSet();
+                            MonsterReSetting();
+
+                            gameboard[ArrowY, ArrowX] = -1;
+                            ArrowY = SavePlayerY;
+                            ArrowX = SavePlayerX;
+                            gameboard[ArrowY, ArrowX] = 2;
+                        }
+                        else if (ArrowY == 12 || ArrowY == 13 || ArrowY == 14)
+                        {
+                            // 모험 떠나기
+                            // 모험 구현
+                            GameboardClear();
+                            AdventureCheckout = false;
+                            AdventureSet();
+                            while (AdventureCheckout == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+
+                                Adventure();
+                            }
+                        }
+                    }
+                    else if (gameboard[ArrowY, ArrowX - 1] == -10) { /* Do Nothing */ }
+                    else if (gameboard[ArrowY, ArrowX - 1] == 20)
+                    {
+                        // 동굴 작동 트리거
+                        CavetriggChk = true;
+                        CavetriggCount++;
+
+                        SavePlayerY = ArrowY;
+                        SavePlayerX = ArrowX;
+
+                        GameboardClear();
+                        AdventureCaveSet();
+
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowY = SavePlayerY;
+                        ArrowX = SavePlayerX;
+                        gameboard[ArrowY, ArrowX] = 2;
+                    }
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowX--;
+                        gameboard[ArrowY, ArrowX] = 2;
+                    }
+                    break;
+
+                case ConsoleKey.DownArrow:
+
+                    if (ArrowY == 23 || gameboard[ArrowY + 1, ArrowX] == -2 || gameboard[ArrowY + 1, ArrowX] == 10)
+                    {
+
+                        if (gameboard[ArrowY + 1, ArrowX] == 10)
+                        {
+
+                            BattleCheck = false;
+                            BattleONCheck = false;
+                            Battlemonsterturn = false;
+                            SavePlayerY = ArrowY;
+                            SavePlayerX = ArrowX;
+
+                            gamemonsterboard[ArrowY + 1, ArrowX] = 0;
+                            monster = new Golem();
+
+                            GameboardClear();
+                            PlayerBattleVal[0] = 5;
+                            MonsterBattleVal[0] = monster.Monsterhp();
+                            MonsterBattleVal[1] = monster.Monsterdamage();
+                            MonsterBattleVal[2] = monster.Monsterdefence();
+
+                            BattleSet();
+
+                            while (BattleCheck == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+                                Battle();
+
+                            }
+
+                            GameboardClear();
+                            AdventureCaveSet();
+                            MonsterReSetting();
+
+                            gameboard[ArrowY, ArrowX] = -1;
+                            ArrowY = SavePlayerY;
+                            ArrowX = SavePlayerX;
+                            gameboard[ArrowY, ArrowX] = 2;
+                        }
+
+                    }
+                    else if (gameboard[ArrowY + 1, ArrowX] == -10) { /* Do Nothing */ }
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowY++;
+                        gameboard[ArrowY, ArrowX] = 2;
+                    }
+                    break;
+
+                case ConsoleKey.RightArrow:
+                    if (ArrowX == 28 || gameboard[ArrowY, ArrowX + 1] == -2 || gameboard[ArrowY, ArrowX + 1] == 10)
+                    {
+                        if (gameboard[ArrowY, ArrowX + 1] == 10)
+                        {
+
+                            BattleCheck = false;
+                            BattleONCheck = false;
+                            Battlemonsterturn = false;
+                            SavePlayerY = ArrowY;
+                            SavePlayerX = ArrowX;
+
+                            gamemonsterboard[ArrowY, ArrowX + 1] = 0;
+                            monster = new Golem();
+
+                            GameboardClear();
+                            PlayerBattleVal[0] = 5;
+                            MonsterBattleVal[0] = monster.Monsterhp();
+                            MonsterBattleVal[1] = monster.Monsterdamage();
+                            MonsterBattleVal[2] = monster.Monsterdefence();
+
+                            BattleSet();
+
+                            while (BattleCheck == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+                                Battle();
+
+                            }
+
+                            GameboardClear();
+                            AdventureCaveSet();
+                            MonsterReSetting();
+
+                            gameboard[ArrowY, ArrowX] = -1;
+                            ArrowY = SavePlayerY;
+                            ArrowX = SavePlayerX;
+                            gameboard[ArrowY, ArrowX] = 2;
+                        }
+                    }
+                    else if (gameboard[ArrowY, ArrowX + 1] == -10) { /* Do Nothing */ }
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowX++;
+                        gameboard[ArrowY, ArrowX] = 2;
+                    }
+                    break;
+                default:
+                    /* Do Nothing */
+                    break;
 
             }
 
@@ -3871,6 +4695,7 @@ namespace TextRpg01
             DownSet2();
             DownSet3();
 
+            Console.SetCursorPosition(0, 31);
             ConsoleKeyInfo Move;
 
             Move = Console.ReadKey();
@@ -4096,6 +4921,228 @@ namespace TextRpg01
                         gameboard[ArrowY, ArrowX] = 2;
                     }
                     break;
+                case ConsoleKey.UpArrow:
+                    if (ArrowY == 2 || gameboard[ArrowY - 1, ArrowX] == -2 ||
+                        gameboard[ArrowY - 1, ArrowX] == 10)
+                    {
+                        if (gameboard[ArrowY - 1, ArrowX] == 10)
+                        {
+
+
+                            BattleCheck = false;
+                            BattleONCheck = false;
+                            Battlemonsterturn = false;
+                            SavePlayerY = ArrowY;
+                            SavePlayerX = ArrowX;
+
+                            gamemonsterboard[ArrowY - 1, ArrowX] = 0;
+
+                            if (ArrowX == 15 && ArrowY - 1 == 3)
+                            {
+                                monster = new Alraune();
+                            }
+                            else
+                            {
+                                monster = new Wolf();
+                            }
+
+                            GameboardClear();
+                            PlayerBattleVal[0] = 5;
+                            MonsterBattleVal[0] = monster.Monsterhp();
+                            MonsterBattleVal[1] = monster.Monsterdamage();
+                            MonsterBattleVal[2] = monster.Monsterdefence();
+
+                            BattleSet();
+
+                            while (BattleCheck == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+                                Battle();
+
+                            }
+
+                            GameboardClear();
+                            AdventureTreeSet();
+                            MonsterReSetting();
+
+                            gameboard[ArrowY, ArrowX] = -1;
+                            ArrowY = SavePlayerY;
+                            ArrowX = SavePlayerX;
+                            gameboard[ArrowY, ArrowX] = 2;
+                        }
+                    }
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowY--;
+                        gameboard[ArrowY, ArrowX] = 2;
+                    }
+
+                    break;
+                case ConsoleKey.LeftArrow:
+                    if (ArrowX == 2 || gameboard[ArrowY, ArrowX - 1] == -2 || gameboard[ArrowY, ArrowX - 1] == 10)
+                    {
+                        if (gameboard[ArrowY, ArrowX - 1] == 10)
+                        {
+
+                            BattleCheck = false;
+                            BattleONCheck = false;
+                            Battlemonsterturn = false;
+                            SavePlayerY = ArrowY;
+                            SavePlayerX = ArrowX;
+
+                            gamemonsterboard[ArrowY, ArrowX - 1] = 0;
+                            monster = new Wolf();
+
+                            GameboardClear();
+                            PlayerBattleVal[0] = 5;
+                            MonsterBattleVal[0] = monster.Monsterhp();
+                            MonsterBattleVal[1] = monster.Monsterdamage();
+                            MonsterBattleVal[2] = monster.Monsterdefence();
+
+                            BattleSet();
+
+                            while (BattleCheck == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+                                Battle();
+
+                            }
+
+                            GameboardClear();
+                            AdventureTreeSet();
+                            MonsterReSetting();
+
+                            gameboard[ArrowY, ArrowX] = -1;
+                            ArrowY = SavePlayerY;
+                            ArrowX = SavePlayerX;
+                            gameboard[ArrowY, ArrowX] = 2;
+                        }
+                    }
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowX--;
+                        gameboard[ArrowY, ArrowX] = 2;
+                    }
+                    break;
+
+                case ConsoleKey.DownArrow:
+
+                    if (ArrowY == 23 || gameboard[ArrowY + 1, ArrowX] == -2 || gameboard[ArrowY + 1, ArrowX] == 10)
+                    {
+
+                        if (gameboard[ArrowY + 1, ArrowX] == 10)
+                        {
+
+                            BattleCheck = false;
+                            BattleONCheck = false;
+                            Battlemonsterturn = false;
+                            SavePlayerY = ArrowY;
+                            SavePlayerX = ArrowX;
+
+                            gamemonsterboard[ArrowY + 1, ArrowX] = 0;
+                            monster = new Wolf();
+
+                            GameboardClear();
+                            PlayerBattleVal[0] = 5;
+                            MonsterBattleVal[0] = monster.Monsterhp();
+                            MonsterBattleVal[1] = monster.Monsterdamage();
+                            MonsterBattleVal[2] = monster.Monsterdefence();
+
+                            BattleSet();
+
+                            while (BattleCheck == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+                                Battle();
+
+                            }
+
+                            GameboardClear();
+                            AdventureTreeSet();
+                            MonsterReSetting();
+
+                            gameboard[ArrowY, ArrowX] = -1;
+                            ArrowY = SavePlayerY;
+                            ArrowX = SavePlayerX;
+                            gameboard[ArrowY, ArrowX] = 2;
+                        }
+
+
+                        if (ArrowX == 14 || ArrowX == 15 || ArrowX == 16)
+                        {
+                            // 모험 떠나기
+                            // 모험 구현
+                            GameboardClear();
+                            AdventureCheckout = false;
+                            AdventureSet();
+                            while (AdventureCheckout == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+
+                                Adventure();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowY++;
+                        gameboard[ArrowY, ArrowX] = 2;
+                    }
+                    break;
+
+                case ConsoleKey.RightArrow:
+                    if (ArrowX == 28 || gameboard[ArrowY, ArrowX + 1] == -2 || gameboard[ArrowY, ArrowX + 1] == 10)
+                    {
+                        if (gameboard[ArrowY, ArrowX + 1] == 10)
+                        {
+
+                            BattleCheck = false;
+                            BattleONCheck = false;
+                            Battlemonsterturn = false;
+                            SavePlayerY = ArrowY;
+                            SavePlayerX = ArrowX;
+
+                            gamemonsterboard[ArrowY, ArrowX + 1] = 0;
+                            monster = new Wolf();
+
+                            GameboardClear();
+                            PlayerBattleVal[0] = 5;
+                            MonsterBattleVal[0] = monster.Monsterhp();
+                            MonsterBattleVal[1] = monster.Monsterdamage();
+                            MonsterBattleVal[2] = monster.Monsterdefence();
+
+                            BattleSet();
+
+                            while (BattleCheck == false)
+                            {
+                                Console.SetCursorPosition(0, 0);
+                                Battle();
+
+                            }
+
+                            GameboardClear();
+                            AdventureTreeSet();
+                            MonsterReSetting();
+
+                            gameboard[ArrowY, ArrowX] = -1;
+                            ArrowY = SavePlayerY;
+                            ArrowX = SavePlayerX;
+                            gameboard[ArrowY, ArrowX] = 2;
+                        }
+                    }
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -1;
+                        ArrowX++;
+                        gameboard[ArrowY, ArrowX] = 2;
+                    }
+                    break;
+                default:
+                    /* Do Nothing */
+                    break;
 
             }
 
@@ -4258,12 +5305,24 @@ namespace TextRpg01
         public void Battle()
         {
 
-
-            
             BattleView();
             if(BattleONCheck == true)
             {
                 BattleVal();
+            }
+
+            if (PlayerBattleVal[3] <= 0)
+            {
+                // 게임 끝내기
+                VillageCheckout = true;
+                AdventureCheckout = true;
+                AdventureTreeCheckout = true;
+                SeaCheck = true;
+                PlayeritemCheckout = true;
+                StoreCheckout = true;
+                CaveCheckout = true;
+                ChoiceCheck = true;
+                isGameOver = true;
             }
 
             ConsoleKeyInfo Move;
@@ -4511,7 +5570,7 @@ namespace TextRpg01
                         BattleView();
 
                         MonsterBattleVal[0]--;
-                        Console.SetCursorPosition(30, 17);
+                        Console.SetCursorPosition(32, 17);
                         Console.WriteLine($"{PlayerOccupation} {PlayerName} 의 공격이 성공했다.".PadLeft(20, ' '));
                         Console.SetCursorPosition(30, 18);
 
@@ -4521,7 +5580,7 @@ namespace TextRpg01
                     }
                     else
                     {
-                        Console.SetCursorPosition(30, 17);
+                        Console.SetCursorPosition(32, 17);
                         Console.WriteLine($"{PlayerOccupation} {PlayerName} 의 공격이 실패했다.".PadLeft(20, ' '));
                         Console.SetCursorPosition(30, 18);
 
@@ -4532,7 +5591,7 @@ namespace TextRpg01
                 }
                 else
                 {
-                    Console.SetCursorPosition(30, 17);
+                    Console.SetCursorPosition(32, 17);
                     Console.WriteLine($"{PlayerOccupation} {PlayerName} 의 공격이 실패했다.".PadLeft(20, ' '));
                     Console.SetCursorPosition(30, 18);
 
@@ -4585,9 +5644,9 @@ namespace TextRpg01
                         if (monster.Monstername() == "알라우네" && 10 < dice)
                         {
                             PlayerBattleVal[0] -= 2;
-                            Console.SetCursorPosition(30, 17);
+                            Console.SetCursorPosition(26, 17);
                             Console.WriteLine($"{monster.Monstername()} 가(이) {monster.Eliteskill()} 스킬을 발동했다.".PadLeft(20, ' '));
-                            Console.SetCursorPosition(30, 18);
+                            Console.SetCursorPosition(31, 18);
 
                             Console.WriteLine($"{PlayerOccupation} {PlayerName} 의 체력이 2 줄었다.".PadLeft(20, ' '));
 
@@ -4596,9 +5655,9 @@ namespace TextRpg01
                         else if (monster.Monstername() == "마왕 바알" && 10 < dice)
                         {
                             PlayerBattleVal[0] -= 2;
-                            Console.SetCursorPosition(30, 17);
+                            Console.SetCursorPosition(26, 17);
                             Console.WriteLine($"{monster.Monstername()} 가(이) {monster.Eliteskill()} 스킬을 발동했다.".PadLeft(20, ' '));
-                            Console.SetCursorPosition(30, 18);
+                            Console.SetCursorPosition(31, 18);
 
                             Console.WriteLine($"{PlayerOccupation} {PlayerName} 의 체력이 2 줄었다.".PadLeft(20, ' '));
 
@@ -4608,9 +5667,9 @@ namespace TextRpg01
                         {
                             PlayerBattleVal[0]--;
 
-                            Console.SetCursorPosition(30, 17);
+                            Console.SetCursorPosition(29, 17);
                             Console.WriteLine($"{monster.Monstername()} 의 공격이 성공했다.".PadLeft(20, ' '));
-                            Console.SetCursorPosition(30, 18);
+                            Console.SetCursorPosition(32, 18);
 
                             Console.WriteLine($"{PlayerOccupation} {PlayerName} 의 체력이 줄었다.".PadLeft(20, ' '));
 
@@ -4621,7 +5680,7 @@ namespace TextRpg01
                     {
                         Console.SetCursorPosition(30, 17);
                         Console.WriteLine($"{monster.Monstername()} 의 공격이 실패했다.".PadLeft(20, ' '));
-                        Console.SetCursorPosition(30, 18);
+                        Console.SetCursorPosition(32, 18);
 
                         Console.WriteLine($"{PlayerOccupation} {PlayerName} 의 체력은 그대로다.".PadLeft(20, ' '));
 
@@ -4632,7 +5691,7 @@ namespace TextRpg01
                 {
                     Console.SetCursorPosition(30, 17);
                     Console.WriteLine($"{monster.Monstername()} 의 공격이 실패했다.".PadLeft(20, ' '));
-                    Console.SetCursorPosition(30, 18);
+                    Console.SetCursorPosition(32, 18);
 
                     Console.WriteLine($"{PlayerOccupation} {PlayerName} 의 체력은 그대로다.".PadLeft(20, ' '));
 
@@ -4668,7 +5727,7 @@ namespace TextRpg01
                     if(PlayerBattleVal[0] <= 0)
                     {
                         PlayerBattleVal[3]--;
-                        Console.SetCursorPosition(30, 15);
+                        Console.SetCursorPosition(26, 15);
                         Console.WriteLine($"{PlayerOccupation} {PlayerName} 은 {monster.Monstername()} 와의 전투에서 패배했다.".PadLeft(20, ' '));
                         if(PlayerBattleVal[3] <= 0)
                         {
@@ -4676,8 +5735,8 @@ namespace TextRpg01
                             Console.WriteLine($"{PlayerOccupation} {PlayerName} 의 남은 체력이 없습니다.".PadLeft(20, ' '));
                             Console.SetCursorPosition(30, 17);
                             Console.WriteLine($"게임에서 패배하셨습니다.".PadLeft(20, ' '));
+
                             
-                            isGameOver = true;
 
                         }
                         else
@@ -5054,6 +6113,10 @@ namespace TextRpg01
                     {
                         gameboard[y, x] = 2;
 
+                        // 화살표 좌표 저장
+                        ArrowY = y;
+                        ArrowX = x;
+
                     }
 
 
@@ -5095,9 +6158,7 @@ namespace TextRpg01
                 }
             }
 
-            // 화살표 좌표 저장
-            ArrowY = 12;
-            ArrowX = 1;
+            
 
             
         } // PlayeritemsSet()
@@ -5502,6 +6563,111 @@ namespace TextRpg01
                         }
                     }
                     break;
+                case ConsoleKey.UpArrow:
+                    if (ArrowY == 12) { /* Do Nothing */ }
+                    else
+                    {
+                        if (ArrowX == 1)
+                        {
+                            if (ArrowY < 21)
+                            {
+
+                                gameboard[ArrowY, 1] = 5;
+                                ArrowY--;
+                                gameboard[ArrowY, 1] = 2;
+
+                            }
+
+                            else if (ArrowY == 27)
+                            {
+                                gameboard[ArrowY, 1] = 3;
+                                ArrowY -= 7;
+                                gameboard[ArrowY, 1] = 2;
+                            }
+
+                        }
+
+                        else
+                        {
+                            gameboard[ArrowY, ArrowX] = -5;
+
+                            ArrowY--;
+                            gameboard[ArrowY, ArrowX] = 4;
+
+                        }
+                    }
+
+                    break;
+                case ConsoleKey.LeftArrow:
+                    if (ArrowX == 1) { /* Do Nothing */ }
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -5;
+
+                        ArrowX--;
+                        gameboard[ArrowY, ArrowX] = 2;
+                    }
+                    break;
+
+                case ConsoleKey.DownArrow:
+                    if (ArrowY == 27) { /* Do Nothing */ }
+                    else
+                    {
+                        if (ArrowX == 1)
+                        {
+                            if (ArrowY < 20)
+                            {
+                                gameboard[ArrowY, 1] = 5;
+                                ArrowY++;
+                                gameboard[ArrowY, 1] = 2;
+
+                            }
+
+                            else if (ArrowY == 20)
+                            {
+                                gameboard[ArrowY, 1] = 5;
+                                ArrowY += 7;
+                                gameboard[ArrowY, 1] = 15;
+                            }
+
+                        }
+
+                        else
+                        {
+                            if (ArrowY == 20)
+                            {
+                                gameboard[ArrowY, ArrowX] = -5;
+                                ArrowY += 7;
+                                ArrowX--;
+                                gameboard[ArrowY, ArrowX] = 15;
+                            }
+                            else
+                            {
+                                gameboard[ArrowY, ArrowX] = -5;
+
+                                ArrowY++;
+                                gameboard[ArrowY, ArrowX] = 4;
+                            }
+                        }
+                    }
+
+
+                    break;
+                case ConsoleKey.RightArrow:
+                    if (ArrowX == 2) { /* Do Nothing */ }
+                    else
+                    {
+                        if (ArrowY == 27) { /* Do Nothing */ }
+                        else
+                        {
+
+                            gameboard[ArrowY, ArrowX] = 5;
+
+                            ArrowX++;
+                            gameboard[ArrowY, ArrowX] = 4;
+                        }
+                    }
+                    break;
 
                 default:
                     
@@ -5833,6 +6999,9 @@ namespace TextRpg01
                     {
                         gameboard[y, x] = 2;
 
+                        // 화살표 좌표 저장
+                        ArrowY = y;
+                        ArrowX = x;
                     }
 
 
@@ -5874,9 +7043,6 @@ namespace TextRpg01
                 }
             }
 
-            // 화살표 좌표 저장
-            ArrowY = 12;
-            ArrowX = 1;
         } // StoreSet()
 
 
@@ -6055,6 +7221,111 @@ namespace TextRpg01
 
                     break;
                 case ConsoleKey.D:
+                    if (ArrowX == 2) { /* Do Nothing */ }
+                    else
+                    {
+                        if (ArrowY == 27) { /* Do Nothing */ }
+                        else
+                        {
+
+                            gameboard[ArrowY, ArrowX] = 5;
+
+                            ArrowX++;
+                            gameboard[ArrowY, ArrowX] = 4;
+                        }
+                    }
+                    break;
+                case ConsoleKey.UpArrow:
+                    if (ArrowY == 12) { /* Do Nothing */ }
+                    else
+                    {
+                        if (ArrowX == 1)
+                        {
+                            if (ArrowY < 21)
+                            {
+
+                                gameboard[ArrowY, 1] = 5;
+                                ArrowY--;
+                                gameboard[ArrowY, 1] = 2;
+
+                            }
+
+                            else if (ArrowY == 27)
+                            {
+                                gameboard[ArrowY, 1] = 3;
+                                ArrowY -= 7;
+                                gameboard[ArrowY, 1] = 2;
+                            }
+
+                        }
+
+                        else
+                        {
+                            gameboard[ArrowY, ArrowX] = -5;
+
+                            ArrowY--;
+                            gameboard[ArrowY, ArrowX] = 4;
+
+                        }
+                    }
+
+                    break;
+                case ConsoleKey.LeftArrow:
+                    if (ArrowX == 1) { /* Do Nothing */ }
+                    else
+                    {
+                        gameboard[ArrowY, ArrowX] = -5;
+
+                        ArrowX--;
+                        gameboard[ArrowY, ArrowX] = 2;
+                    }
+                    break;
+
+                case ConsoleKey.DownArrow:
+                    if (ArrowY == 27) { /* Do Nothing */ }
+                    else
+                    {
+                        if (ArrowX == 1)
+                        {
+                            if (ArrowY < 20)
+                            {
+                                gameboard[ArrowY, 1] = 5;
+                                ArrowY++;
+                                gameboard[ArrowY, 1] = 2;
+
+                            }
+
+                            else if (ArrowY == 20)
+                            {
+                                gameboard[ArrowY, 1] = 5;
+                                ArrowY += 7;
+                                gameboard[ArrowY, 1] = 15;
+                            }
+
+                        }
+
+                        else
+                        {
+                            if (ArrowY == 20)
+                            {
+                                gameboard[ArrowY, ArrowX] = -5;
+                                ArrowY += 7;
+                                ArrowX--;
+                                gameboard[ArrowY, ArrowX] = 15;
+                            }
+                            else
+                            {
+                                gameboard[ArrowY, ArrowX] = -5;
+
+                                ArrowY++;
+                                gameboard[ArrowY, ArrowX] = 4;
+                            }
+                        }
+                    }
+
+
+                    break;
+                case ConsoleKey.RightArrow:
                     if (ArrowX == 2) { /* Do Nothing */ }
                     else
                     {
