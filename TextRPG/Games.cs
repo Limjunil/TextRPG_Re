@@ -1830,12 +1830,12 @@ namespace TextRpg01
                         gameboard[y, x] = 20;
                     }
 
-                    //// npc 좌표
-                    //if (x == 16 && y == 10)
-                    //{
-                    //    gameboard[y, x] = 4;
+                    // npc 좌표
+                    if (x == 19 && y == 18)
+                    {
+                        gameboard[y, x] = 4;
 
-                    //}
+                    }
 
                     // 상점 좌표
                     if (x == 21 && y == 16)
@@ -1995,7 +1995,7 @@ namespace TextRpg01
 
                             break;
                         case 4:
-                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.ForegroundColor = ConsoleColor.DarkYellow;
 
                             Console.Write("●".PadRight(2, ' '));
                             Console.ForegroundColor = ConsoleColor.White;
@@ -2032,7 +2032,7 @@ namespace TextRpg01
             DownSet2();
             DownSet3();
 
-
+            Npctalk();
 
             Console.SetCursorPosition(0, 31);
 
@@ -2335,6 +2335,56 @@ namespace TextRpg01
 
         } // Village()
 
+        // npc 대화문 구현 함수
+        public void NpctalkSet()
+        {
+            // 대화문 구현
+
+            Console.SetCursorPosition(14, 15);
+            for (int x = 0; x < 21; x++)
+            {
+                Console.Write("■".PadLeft(2, ' '));
+            }
+            for (int j = 0; j < 6; j++)
+            {
+
+                Console.SetCursorPosition(14, 16+j);
+                for (int x = 0; x < 21; x++)
+                {
+                    if (x == 0 || x == 20)
+                    {
+
+                        Console.Write("■".PadLeft(2, ' '));
+
+                    }
+                    else
+                    {
+                        Console.Write(" ".PadLeft(3, ' '));
+
+                    }
+                }
+            }
+            Console.SetCursorPosition(14, 22);
+            for (int x = 0; x < 21; x++)
+            {
+                Console.Write("■".PadLeft(2, ' '));
+            }
+
+        } // NpctalkSet()
+
+        public void Npctalk()
+        {
+            NpctalkSet();
+
+            // 말하는 사람 이름
+            Console.SetCursorPosition(18, 16);
+            Console.WriteLine("[마을 촌장]");
+            // 대화 구현 => 출력하고 다시 테스트 나오게 할거라면 대화 한 문장이 끝나면 다시 대화문을 출력해서 덮어 씌운다.
+            Console.SetCursorPosition(18, 18);
+            Console.WriteLine("어허. 이 삭막한 장소에 누군가 찾아온 일은 매우 드문");
+            Console.SetCursorPosition(18, 19);
+            Console.WriteLine("일이구만.");
+        } // Npctalk()
 
         // 모험 선택 좌표 구현
         public void AdventureSet()
