@@ -5838,7 +5838,7 @@ namespace TextRpg01
                         Console.SetCursorPosition(26, 15);
                         Console.WriteLine($"{PlayerOccupation} {PlayerName} 은 {monster.Monstername()} 와의 전투에서 승리했다.".PadLeft(20, ' '));
 
-                        if (monster.Monstername() == "악마 바알" || (monster.Monstername() == "알라우네")
+                        if (monster.Monstername() == "악마 바알" || (monster.Monstername() == "알라우네"))
                         {
                             randomitem = 20;
                         }
