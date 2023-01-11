@@ -59,7 +59,7 @@ namespace TextRpg01
         public string PlayerOccupation = string.Empty;
         public int SavePlayerY;
         public int SavePlayerX;
-
+         
 
         public int[] StatusValues = new int[6];
         // 전투 체력 / 공격력 / 방어력 / 진짜 체력 순
@@ -98,7 +98,6 @@ namespace TextRpg01
             
             GameSet();
 
-            
             GamePlay();
         }
 
@@ -192,6 +191,7 @@ namespace TextRpg01
             OccupationCheck = false;
             StatusCheck = false;
 
+
             while (isGameOver == false)
             {
                 while (TitleCheck == false)
@@ -253,6 +253,7 @@ namespace TextRpg01
                 }
                 else { /* Do Nothing */ }
 
+                // 첫 소지금 150 골드 지급
                 PlayeritemVal[0] = 150;
 
                 //마을, 모험, 아이템, 끝내기 선택지
@@ -269,8 +270,7 @@ namespace TextRpg01
 
             }
 
-            
-
+            // 게임이 끝나면 출력할 화면
             if (isGameOver == true)
             {
                 GameboardClear();
@@ -331,7 +331,31 @@ namespace TextRpg01
             }
             Console.WriteLine();
 
-            Console.SetCursorPosition(29, 8);
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.SetCursorPosition(4, 8);
+            Console.WriteLine(" ^B#########G.:B&P      P&G.  Y&######7      P&######~ :B#&P     ^#&J  :B######BP?."); 
+            Console.SetCursorPosition(4, 9);
+
+            Console.WriteLine(" :~^^B@@!^^^: P@&^     Y@@!  !@@Y^^^^^      J@@7^^^^^  P@@@@7    G@B.  P@&!^^~?#@@G "); 
+            Console.SetCursorPosition(4, 10);
+
+            Console.WriteLine("    7@@?     ?@@Y^^^^^7@@Y  :&@#^:::       ~@@P::::   ?@@!G@&:  J@@^  ?@@7     !@@B "); 
+            Console.SetCursorPosition(4, 11);
+
+            Console.WriteLine("   ^&@P     ^@@&#&&&#&@@B   P@@####G.     .#@@###&5  ^@@J ^@@P ~@@?  ^@@5      P@@~ "); 
+            Console.SetCursorPosition(4, 12);
+
+            Console.WriteLine("  B@#:    .B@B:.....G@&^  ?@@7 ....      5@&~ ...  .B@G   J@@?B@P  .B@B.    ^G@#!  "); 
+            Console.SetCursorPosition(4, 13);
+
+            Console.WriteLine(" Y@@!     5@@~     ?@@7  ~@@B~~~~^      7@@P~~~~^  5@&^    B@@@#:  5@@J~!7JG@#J.   "); 
+            Console.SetCursorPosition(4, 14);
+
+            Console.WriteLine("^B#J     ~##?     :B#5   P#BB####?     :G#BB####! ~##7     ~B##!  ~##BB#BG5?^   ");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            Console.SetCursorPosition(29, 20);
+
             Console.WriteLine("[게임이 끝났습니다. 수고하셨습니다.]");
 
             ConsoleKeyInfo Move;
@@ -387,23 +411,39 @@ namespace TextRpg01
             }
             Console.WriteLine();
 
-            Console.SetCursorPosition(4, 8);
-            Console.WriteLine("               ^5P7        ^#5                         :^                      "); 
-            Console.SetCursorPosition(4, 9);
+            Console.SetCursorPosition(20, 6);
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine("       !GG!   ^GP5PPY^ ~BJ   :PY.JG55P! JB5   ^G7");
+            Console.SetCursorPosition(20, 7);
 
-            Console.WriteLine("             J#G@P   .~77^B@!!~   !~ .~77~  ^!^!7!. ~Y@B~ ~~  :!^ ^!^!! .~77^  ");
-            Console.SetCursorPosition(4, 10);
+            Console.WriteLine("     .YGY@?  .B#^::?@B ~@5  7#Y.7@Y:^: !@G@?  B#.");
+            Console.SetCursorPosition(20, 8);
 
-            Console.WriteLine("           ~B#~7@P  ?#P??&@?^@#.:G#?Y#PJB@7:&@J7B@J 5@B?!J@5  B@!:&@5??5#PJB@!");
-            Console.SetCursorPosition(4, 11);
+            Console.WriteLine("    !&G^?@J  5@^   J@? ~@Y.PB~ ^&#55J :&P G@^Y@^ ");
+            Console.SetCursorPosition(20, 9);
 
-            Console.WriteLine("         .Y@&GPB@G J@Y  7@P :@B?&5:P@PJJY5^G@7 :&#:.B&~ ~@G. Y@J G@7  G@5JJ55: ");
-            Console.SetCursorPosition(4, 12);
+            Console.WriteLine("  ^P#5JJG@Y ?@5:~7PG!  ~@GBY. .#@!^^ .B#. :&&@?  ");
+            Console.SetCursorPosition(20, 10);
 
-            Console.WriteLine("        ^G#7...7@G.Y@GJ5@B: :#&B!  P&PJY7 ?@Y  G&! 7@#? J@B?5@G.?@Y  .P&PJY! ");
-            Console.SetCursorPosition(4, 13);
+            Console.WriteLine(" .JY.   ^57 J5YYJ7^    :Y5~   ~5YYYJ ^5^   !5?   ");
 
-            Console.WriteLine("        .^.     ::  :^^.:.   ::.    :^^:. ::.  ::   :^:  :^:::. ::.    :~^:.");
+            Console.SetCursorPosition(20, 13);
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.WriteLine("          .JYY5YYJ.!5JJY?: .Y?   ~5~ ~5YYY7      ");
+            Console.SetCursorPosition(20, 14);
+
+            Console.WriteLine("          .^!@B^^:^@P:^#@~ P@~  .&#.:&B^^^:      ");
+            Console.SetCursorPosition(20, 15);
+
+            Console.WriteLine("            P@^   B@PPPJ^ ?@7   P@^ G@PYY:       ");
+            Console.SetCursorPosition(20, 16);
+
+            Console.WriteLine("           J@7   P@~:B@~ :@&^:^P&~ Y@?:^:        ");
+            Console.SetCursorPosition(20, 17);
+
+            Console.WriteLine("          :GY   ^B?  ^B5  JGGP5?. ^GG555^        ");
+            Console.ForegroundColor = ConsoleColor.White;
+
 
             Console.SetCursorPosition(0, 31);
 
@@ -566,6 +606,10 @@ namespace TextRpg01
                     {
                         gameboard[y, x] = 2;
 
+                        // 화살표 좌표 저장
+                        ArrowY = y;
+                        ArrowX = x;
+
                     }
 
                     // 선택지 앞 공백 좌표
@@ -609,11 +653,9 @@ namespace TextRpg01
                 }
             }
 
-            // 화살표 좌표 저장
-            ArrowY = 12;
-            ArrowX = 1;
+            
 
-        } // OccupationSet()
+        } // OccupationSet() 
 
         // 직업 선택 구현 함수
         public void Occupation()
@@ -869,6 +911,11 @@ namespace TextRpg01
                     {
                         gameboard[y, x] = 2;
 
+
+                        // 화살표 좌표 저장
+                        ArrowY = y;
+                        ArrowX = x;
+
                     }
 
 
@@ -971,9 +1018,6 @@ namespace TextRpg01
                 }
             }
 
-            // 화살표 좌표 저장
-            ArrowY = 12;
-            ArrowX = 1;
 
             
         } // StatusSet()
@@ -1011,7 +1055,7 @@ namespace TextRpg01
 
                         // 오른쪽 스탯 화살표
                         case 4:
-                            Console.Write("▶".PadLeft(9, ' '));
+                            Console.Write("▶".PadLeft(7, ' ') + "".PadLeft(2, ' '));
                             break;
                         case 5:
                             Console.Write("".PadLeft(30, ' '));
@@ -1109,7 +1153,7 @@ namespace TextRpg01
                             }
                             else
                             {
-                                Console.Write("랜덤 선택".PadLeft(9, ' ') + "".PadRight(39, ' '));
+                                Console.Write("랜덤 선택".PadLeft(10, ' ') + "".PadRight(38, ' '));
 
                             }
                             break;
@@ -1122,7 +1166,7 @@ namespace TextRpg01
                             }
                             else
                             {
-                                Console.Write("초기화".PadLeft(8, ' ') + "".PadRight(41, ' '));
+                                Console.Write("초기화".PadLeft(9, ' ') + "".PadRight(40, ' '));
 
                             }
                             break;
@@ -1542,6 +1586,11 @@ namespace TextRpg01
                     {
                         gameboard[y, x] = 2;
 
+
+                        // 화살표 좌표 저장
+                        ArrowY = y;
+                        ArrowX = x;
+
                     }
 
                     // 선택지 앞 공백 좌표
@@ -1584,11 +1633,6 @@ namespace TextRpg01
 
                 }
             }
-
-            // 화살표 좌표 저장
-            ArrowY = 12;
-            ArrowX = 1;
-
 
 
         } // ChoiceActSet()
@@ -1819,17 +1863,61 @@ namespace TextRpg01
 
                     }
                     if((x == 20 || x == 22 || x == 23) && y == 16 ||
-                       (x == 20 || x == 21 || x == 22 || x == 23) && y == 15)
+                       (20 <= x && x <= 23) && y == 15)
                     {
                         gameboard[y, x] = -2;
 
                     }
-                    if ((x == 20 || x == 21 || x == 22 || x == 23) && y == 14 ||
-                       (x == 20 || x == 21 || x == 22 || x == 23) && y == 13)
+                    if ((20 <= x && x <= 23) && y == 14 ||
+                       (20 <= x && x <= 23) && y == 13)
                     {
                         gameboard[y, x] = 20;
 
                     }
+
+                    if((20<=x&&x<= 23) && y == 12)
+                    {
+                        gameboard[y, x] = 20;
+                    }
+
+                    // 건물 좌표
+                    if ((7 <= x && x <= 10) && y == 16)
+                    {
+                        gameboard[y, x] = -2;
+
+                        if (x == 8 && y == 16)
+                        {
+                            gameboard[y, x] = -2;
+
+                        }
+                    }
+                    if ((7 <= x && x <= 10) && y == 15)
+                    {
+                        gameboard[y, x] = -2;
+                    }
+                    if ((7 <= x && x <= 10) && (y == 14 || y == 13 || y == 12))
+                    {
+                        gameboard[y, x] = 20;
+                    }
+
+
+                    if ((2 <= x && x <= 5) && (y == 12 || y == 11))
+                    {
+                        gameboard[y, x] = -2;
+                    }
+                    if ((2 <= x && x <= 5) && (y == 10 || y == 9 || y == 8))
+                    {
+                        gameboard[y, x] = 20;
+                    }
+                    if ((25 <= x && x <= 28) && (y == 12 || y == 11))
+                    {
+                        gameboard[y, x] = -2;
+                    }
+                    if ((25 <= x && x <= 28) && (y == 10 || y == 9 || y == 8))
+                    {
+                        gameboard[y, x] = 20;
+                    }
+
 
                     // 바닥 타일 좌표
                     if ((x == 13 || x== 14 || x == 15 || x == 16 || x == 17)&& (1 < y && y < 24))
@@ -1864,10 +1952,39 @@ namespace TextRpg01
                     switch (gameboard[y, x])
                     {
                         case 20:
-                            Console.ForegroundColor = ConsoleColor.Blue;
+                            if ((20 <= x && x <= 23) && y == 12 || (2 <= x && x <= 5) && y == 8)
+                            {
+                                Console.ForegroundColor = ConsoleColor.DarkBlue;
 
-                            Console.Write("■".PadRight(2, ' '));
-                            Console.ForegroundColor = ConsoleColor.White;
+                                Console.Write("■".PadRight(2, ' '));
+                                Console.ForegroundColor = ConsoleColor.White;
+                            }
+                            else if ((7 <= x && x <= 10) && (y == 14 || y == 13 || y == 12) || 
+                                (25 <= x && x <= 28) && (y == 10 || y == 9 || y == 8))
+                            {
+
+                                if(y == 12 || y == 8)
+                                {
+                                    Console.ForegroundColor = ConsoleColor.DarkRed;
+
+                                    Console.Write("■".PadRight(2, ' '));
+                                    Console.ForegroundColor = ConsoleColor.White;
+                                }
+                                else
+                                {
+                                    Console.ForegroundColor = ConsoleColor.Red;
+
+                                    Console.Write("■".PadRight(2, ' '));
+                                    Console.ForegroundColor = ConsoleColor.White;
+                                }
+                            }
+                            else
+                            {
+                                Console.ForegroundColor = ConsoleColor.Blue;
+
+                                Console.Write("■".PadRight(2, ' '));
+                                Console.ForegroundColor = ConsoleColor.White;
+                            }
 
                             break;
                         case 10:
@@ -1886,6 +2003,7 @@ namespace TextRpg01
                             break;
                         case -2:
                             Console.Write("■".PadRight(2, ' '));
+
                             break;
 
                         case -5:
@@ -5710,7 +5828,7 @@ namespace TextRpg01
                 Console.SetCursorPosition(30, 15);
                 Console.WriteLine($"{monster.Monstername()} 이(가) {PlayerOccupation} {PlayerName} 을 공격했다.");
 
-                dice = random.Next(1, 40 + 1);
+                dice = random.Next(1, 30 + 1);
 
                 if (PlayerBattleVal[2] + Totaldefence < MonsterBattleVal[1] + dice)
                 {
@@ -6310,9 +6428,9 @@ namespace TextRpg01
                 Console.WriteLine();
             }
             Console.WriteLine();
-            Console.SetCursorPosition(40, 8);
+            Console.SetCursorPosition(36, 8);
             Console.WriteLine($"[{PlayerName} 의 인벤토리]");
-            Console.SetCursorPosition(35, 10);
+            Console.SetCursorPosition(30, 10);
             Console.WriteLine($"[현재 {PlayerName} 의 소지한 골드 : {PlayeritemVal[0]}]");
 
             int loopCount = 0;
