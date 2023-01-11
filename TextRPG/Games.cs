@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.Collections;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace TextRpg01
 {
-    
+
     public class Games
     {
         public const int BOARDX = 31;
@@ -35,6 +36,7 @@ namespace TextRpg01
         public bool AlrauneHitChk;
         public bool AlrauneitemChk = false;
         public bool SeaCheck;
+        public bool LevelUpStatus = false;
         public int PlayerSeaWalkCount;
 
 
@@ -61,8 +63,8 @@ namespace TextRpg01
 
         public int[] StatusValues = new int[6];
         // 전투 체력 / 공격력 / 방어력 / 진짜 체력 순
-        public int[] PlayerBattleVal = new int[4] { 0, 0, 0, 5};
-        
+        public int[] PlayerBattleVal = new int[4] { 0, 0, 0, 5 };
+
         public int[] MonsterBattleVal = new int[3];
 
         // 플레이어 인벤토리 문자들
@@ -81,12 +83,15 @@ namespace TextRpg01
         // 상점 물품
         public List<string> StoreVal = new List<string>();
 
-
+        // 플레이어 레벨업/경험치 확인하는 배열
+        // 현재 레벨 / 현재 경험치량 / 다음 레벨업에 필요한 경험치량 표기
+        public int[] PlayerLevel = new int[3] { 1, 0, 10 };  
 
 
         Random random = new Random();
         Monster monster = new Monster();
         Weps weps = new Weps();
+        Potion potion = new Potion();
 
         public Games()
         {
@@ -821,7 +826,15 @@ namespace TextRpg01
         // 스탯 선택 좌표 구현
         public void StatusSet()
         {
-            StatusValues = new int[7] { 5, 5, 5, 5, 5, 5, 10 };
+            if(LevelUpStatus == true)
+            {
+
+            }
+            else
+            {
+                StatusValues = new int[7] { 5, 5, 5, 5, 5, 5, 10 };
+
+            }
 
             for (int y = 0; y < BOARDY; y++)
             {
@@ -1090,10 +1103,28 @@ namespace TextRpg01
                             break;
 
                         case 13:
-                            Console.Write("랜덤 선택".PadLeft(9, ' ') + "".PadRight(39, ' '));
+                            if(LevelUpStatus == true)
+                            {
+                                Console.Write("□□□□".PadLeft(9, ' ') + "".PadRight(39, ' '));
+                            }
+                            else
+                            {
+                                Console.Write("랜덤 선택".PadLeft(9, ' ') + "".PadRight(39, ' '));
+
+                            }
                             break;
+
                         case 14:
-                            Console.Write("초기화".PadLeft(8, ' ') + "".PadRight(41, ' '));
+                            if (LevelUpStatus == true)
+                            {
+                                Console.Write("□□□□".PadLeft(9, ' ') + "".PadRight(39, ' '));
+
+                            }
+                            else
+                            {
+                                Console.Write("초기화".PadLeft(8, ' ') + "".PadRight(41, ' '));
+
+                            }
                             break;
                         case 15:
                             Console.Write("▶".PadLeft(34, ' '));
@@ -1396,51 +1427,63 @@ namespace TextRpg01
 
                     else if (gameboard[20, 1] == 2)
                     {
-                        // 도적 선택
-                        PlayerOccupation = "도적";
-                        OccupationCheck = true;
-
-
+                        /* Do Nothing */
                     }
                     // 랜덤 선택
                     else if (gameboard[24, 1] == 15)
                     {
-                        // 랜덤 선택
-                        Random random = new Random();
 
-                       
-                        for (int i = 0; i < StatusValues[6]; i++)
+                        if (LevelUpStatus == true)
                         {
-                            int RandomOcc = random.Next(1, 6 + 1);
-                            switch (RandomOcc)
-                            {
-                                case 1:
-                                    StatusValues[0]++;
-                                    break;
-                                case 2:
-                                    StatusValues[1]++;
-                                    break;
-                                case 3:
-                                    StatusValues[2]++;
-                                    break;
-                                case 4:
-                                    StatusValues[3]++;
-                                    break;
-                                case 5:
-                                    StatusValues[4]++;
-                                    break;
-                                case 6:
-                                    StatusValues[5]++;
-                                    break;
-                            }
+                            /* Do Nothing */
+
                         }
-                        StatusCheck = true;
+                        else
+                        {
+                            // 랜덤 선택
+                            Random random = new Random();
+
+
+                            for (int i = 0; i < StatusValues[6]; i++)
+                            {
+                                int RandomOcc = random.Next(1, 6 + 1);
+                                switch (RandomOcc)
+                                {
+                                    case 1:
+                                        StatusValues[0]++;
+                                        break;
+                                    case 2:
+                                        StatusValues[1]++;
+                                        break;
+                                    case 3:
+                                        StatusValues[2]++;
+                                        break;
+                                    case 4:
+                                        StatusValues[3]++;
+                                        break;
+                                    case 5:
+                                        StatusValues[4]++;
+                                        break;
+                                    case 6:
+                                        StatusValues[5]++;
+                                        break;
+                                }
+                            }
+                            StatusCheck = true;
+                        }
                     }
                     // 초기화
                     else if (gameboard[27, 1] == 15)
                     {
-                        CheckStack = 0;
-                        StatusSet();
+                        if(LevelUpStatus == true)
+                        {
+                            /* Do Nothing */
+                        }
+                        else
+                        {
+                            CheckStack = 0;
+                            StatusSet();
+                        }
                     }
                     break;
 
@@ -1449,6 +1492,15 @@ namespace TextRpg01
             if (CheckStack == 10)
             {
                 StatusCheck = true;
+            }
+            else if (LevelUpStatus == true)
+            {
+                if (CheckStack == 1)
+                {
+                    StatusCheck = true;
+
+                }
+                else { /* Do Nothing */ }
             }
 
         } // Status()
@@ -5158,7 +5210,7 @@ namespace TextRpg01
         public void DownSet1()
         {
             Console.SetCursorPosition(3, 26);
-            Console.WriteLine("이름 : {0} ", PlayerName);
+            Console.WriteLine($"이름 : {PlayerName} || 레벨 : {PlayerLevel[0]}");
             Console.SetCursorPosition(3, 27);
             PlayerHpVal();
 
@@ -5189,11 +5241,19 @@ namespace TextRpg01
 
         public void DownSet3()
         {
-
+            
             Console.SetCursorPosition(67, 26);
-            Console.WriteLine("[가방]");
+            Console.WriteLine($"[가방] || 경험치 : {PlayerLevel[1]}");
             Console.SetCursorPosition(67, 27);
             Console.WriteLine($"골드 : {PlayeritemVal[0]}");
+            if (0 < PlayeritemVal[1])
+            {
+                Console.SetCursorPosition(67, 28);
+                Console.WriteLine($"체력 포션 : {PlayeritemVal[1]} 개");
+            }
+            else { /* Do Nothing */ }
+            Console.SetCursorPosition(67, 29);
+            Console.WriteLine($"다음 레벨업까지 : {PlayerLevel[2]}");
 
 
         } // DownSet3()
@@ -5403,6 +5463,24 @@ namespace TextRpg01
 
             }
 
+            if (LevelUpStatus == true)
+            {
+                
+                StatusCheck = false;
+                CheckStack = 0;
+                StatusValues[6] = 1;
+                GameboardClear();
+                StatusSet();
+
+                while (StatusCheck == false)
+                {
+                    Console.SetCursorPosition(0, 0);
+                    Status();
+                }
+                LevelUpStatus = false;
+            }
+            else { /* Do Nothing */ }
+
 
         } // Battle()
 
@@ -5556,7 +5634,7 @@ namespace TextRpg01
                 Console.SetCursorPosition(30, 15);
                 Console.WriteLine($"{PlayerOccupation} {PlayerName} 이(가) {monster.Monstername()} 을 공격했다.");
 
-                int dice = random.Next(1, 10 + 1);
+                int dice = random.Next(1, 20 + 1);
 
                 if (MonsterBattleVal[2] < PlayerBattleVal[1] + TotalDamage + dice)
                 {
@@ -5830,6 +5908,37 @@ namespace TextRpg01
 
 
                     }
+
+                    Console.SetCursorPosition(30, 17);
+                    Console.WriteLine($"{monster.Monsterexp()} 경험치를 획득했다.".PadLeft(20, ' '));
+                    PlayerLevel[1] += monster.Monsterexp();
+                    if (PlayerLevel[2] <= PlayerLevel[1])
+                    {
+                        PlayerLevel[1] -= PlayerLevel[2];
+                        PlayerLevel[2] += 10;
+                        PlayerLevel[0]++;
+                        Console.SetCursorPosition(30, 19);
+                        Console.WriteLine($"레벨 {PlayerLevel[0]} 로 상승했다.".PadLeft(20, ' '));
+
+                        LevelUpStatus = true;
+
+
+                        //StatusCheck = false;
+                        //CheckStack = 0;
+                        //StatusValues[6] = 1;
+                        //GameboardClear();
+                        //StatusSet();
+
+                        //while (StatusCheck == false)
+                        //{
+                        //    Console.SetCursorPosition(0, 0);
+                        //    Status();
+                        //}
+                        //LevelUpStatus = false;
+
+                    }
+                    else { /* Do Nothing */ }
+
                     BattleCheck = true;
 
 
@@ -6174,10 +6283,7 @@ namespace TextRpg01
                     switch (gameboard[y, x])
                     {
 
-                        //case -3:
-                        //    Console.Write($"[{PlayerName} 의 인벤토리]".PadLeft(45, ' ') + "".PadRight(33, ' '));
-                        //    break;
-
+                        
                         case -2:
                             Console.Write("■".PadRight(2, ' '));
                             break;
@@ -6335,6 +6441,11 @@ namespace TextRpg01
                         Console.Write($"{PlayeritemVal[23]}");
 
                     }
+                    else if (Playeritem[i] == "체력 포션")
+                    {
+                        Console.Write($"{PlayeritemVal[1]}");
+
+                    }
 
 
                 }
@@ -6444,6 +6555,11 @@ namespace TextRpg01
                         Console.Write($"{PlayeritemVal[23]}");
 
                     }
+                    else if (Playeritem[i] == "체력 포션")
+                    {
+                        Console.Write($"{PlayeritemVal[1]}");
+
+                    }
                     loopCount++;
                 }
             }
@@ -6526,6 +6642,7 @@ namespace TextRpg01
                             }
 
                         }
+
 
                         else
                         {
@@ -6796,6 +6913,55 @@ namespace TextRpg01
                                         break;
                                 }
                             }
+                            else if (Playeritem[ArrayVal] == "체력 포션")
+                            {
+                                Console.SetCursorPosition(33, 23);
+
+                                Console.WriteLine("사용하시겠습니까?");
+                                Console.SetCursorPosition(33, 24);
+                                Console.WriteLine("왼쪽 입력 : 사용하기, 오른쪽 입력 : 아니요.");
+
+                                Console.SetCursorPosition(0, 31);
+                                Move = Console.ReadKey();
+
+                                switch (Move.Key)
+                                {
+                                    case ConsoleKey.A:
+                                        // 원래 체력 회복
+                                        if (PlayerBattleVal[3] == 5)
+                                        {
+                                            Console.SetCursorPosition(33, 25);
+                                            Console.WriteLine($"이미 체력은 가득 찼습니다.");
+
+                                        }
+                                        else
+                                        {
+                                            PlayerBattleVal[3]++;
+                                            Console.SetCursorPosition(33, 25);
+                                            Console.WriteLine("체력이 회복되었습니다.");
+                                            PlayeritemVal[1]--;
+
+                                            if (PlayeritemVal[1] < 1)
+                                            {
+                                                Playeritem.Remove("체력 포션");
+
+                                            }
+                                            else { /* Do Nothing */ }
+                                        }
+
+                                        Console.SetCursorPosition(0, 31);
+                                        Move = Console.ReadKey();
+                                        break;
+
+                                    case ConsoleKey.D:
+                                        Console.SetCursorPosition(33, 25);
+                                        Console.WriteLine($"사용하지 않았습니다.");
+
+                                        Console.SetCursorPosition(0, 31);
+                                        Move = Console.ReadKey();
+                                        break;
+                                }
+                            }
 
                         }
                         else
@@ -6929,7 +7095,57 @@ namespace TextRpg01
                                         break;
                                 }
                             }
+                            else if (Playeritem[ArrayVal] == "체력 포션")
+                            {
+                                Console.SetCursorPosition(33, 23);
+
+                                Console.WriteLine("사용하시겠습니까?");
+                                Console.SetCursorPosition(33, 24);
+                                Console.WriteLine("왼쪽 입력 : 사용하기, 오른쪽 입력 : 아니요.");
+
+                                Console.SetCursorPosition(0, 31);
+                                Move = Console.ReadKey();
+
+                                switch (Move.Key)
+                                {
+                                    case ConsoleKey.A:
+                                        // 원래 체력 회복
+                                        if (PlayerBattleVal[3] == 5)
+                                        {
+                                            Console.SetCursorPosition(33, 25);
+                                            Console.WriteLine($"이미 체력은 가득 찼습니다.");
+
+                                        }
+                                        else
+                                        {
+                                            PlayerBattleVal[3]++;
+                                            Console.SetCursorPosition(33, 25);
+                                            Console.WriteLine("체력이 회복되었습니다.");
+                                            PlayeritemVal[1]--;
+
+                                            if (PlayeritemVal[1] < 1)
+                                            {
+                                                Playeritem.Remove("체력 포션");
+
+                                            }
+                                            else { /* Do Nothing */ }
+                                        }
+
+                                        Console.SetCursorPosition(0, 31);
+                                        Move = Console.ReadKey();
+                                        break;
+
+                                    case ConsoleKey.D:
+                                        Console.SetCursorPosition(33, 25);
+                                        Console.WriteLine($"사용하지 않았습니다.");
+
+                                        Console.SetCursorPosition(0, 31);
+                                        Move = Console.ReadKey();
+                                        break;
+                                }
+                            }
                         }
+                        
                         else
                         {
                             /* Do Nothing */
@@ -7353,7 +7569,11 @@ namespace TextRpg01
                         {
                             if (ArrowY == 12)
                             {
-                                if (PlayerOccupation == "전사")
+                                if (StoreVal[ArrayVal] == "체력 포션")
+                                {
+                                    potion = new HpPotion();
+                                }
+                                else if (PlayerOccupation == "전사")
                                 {
                                     weps = new Warrior4();
 
@@ -7368,11 +7588,12 @@ namespace TextRpg01
                                     weps = new Rogue4();
 
                                 }
+
                                 else { /* Do Nothing */}
                             }
                             else if (ArrowY == 13)
                             {
-
+                                
                                 if (PlayerOccupation == "전사")
                                 {
                                     weps = new Warrior6();
@@ -7427,6 +7648,7 @@ namespace TextRpg01
 
                                         Move = Console.ReadKey();
                                     }
+                                    
 
                                     else if (PlayerWearWeps[0] == weps.Wepitem() || PlayerWearWeps[1] == weps.Wepitem() || PlayerWearWeps[2] == weps.Wepitem())
                                     {
@@ -7521,7 +7743,11 @@ namespace TextRpg01
                         {
                             if (ArrowY == 12)
                             {
-                                if (PlayerOccupation == "전사")
+                                if (StoreVal[ArrayVal] == "체력 포션")
+                                {
+                                    potion = new HpPotion();
+                                }
+                                else if (PlayerOccupation == "전사")
                                 {
                                     weps = new Warrior5();
 
@@ -7542,15 +7768,28 @@ namespace TextRpg01
 
                             Console.SetCursorPosition(33, 22);
                             Console.WriteLine($"{playeritemsIndex[StoreVal[ArrayVal]]}");
-                            Console.SetCursorPosition(33, 23);
-                            Console.WriteLine($"구매하시겠습니까? (가격 : {weps.Wepgold()} 골드 )");
+
+                            if (StoreVal[ArrayVal] == "체력 포션")
+                            {
+                                
+                                Console.SetCursorPosition(33, 23);
+                                Console.WriteLine($"구매하시겠습니까? (가격 : {potion.Potiongold()} 골드 )");
+                                
+                            }
+                            else
+                            {
+
+                                Console.SetCursorPosition(33, 23);
+                                Console.WriteLine($"구매하시겠습니까? (가격 : {weps.Wepgold()} 골드 )");
+                                
+
+                            }
                             Console.SetCursorPosition(33, 24);
                             Console.WriteLine("왼쪽 입력 -> 구매, 오른쪽 입력 -> 구매 취소");
                             Console.SetCursorPosition(0, 31);
-
                             Move = Console.ReadKey();
 
-
+                            bool twopotioncheck = false;
                             bool twocheck = false;
                             switch (Move.Key)
                             {
@@ -7561,9 +7800,13 @@ namespace TextRpg01
                                         {
                                             twocheck = true;
                                             
-                                            
                                         }
-                                        
+                                        else if (Playeritem[i] == potion.Potionname())
+                                        {
+                                            twopotioncheck = true;
+
+                                        }
+
                                     }
                                     if(twocheck == true)
                                     {
@@ -7574,7 +7817,30 @@ namespace TextRpg01
 
                                         Move = Console.ReadKey();
                                     }
+                                    else if (potion.Potiongold() <= PlayeritemVal[0])
+                                    {
+                                        // 체력 포션 중복 구매 확인
+                                        if (twopotioncheck == true)
+                                        {   /* Do Nothing */ }
+                                        else
+                                        {
+                                            Playeritem.Add(potion.Potionname());
+                                        }
 
+                                        PlayeritemVal[0] -= potion.Potiongold();
+
+                                        if (potion.Potionname() == "체력 포션")
+                                        {
+                                            PlayeritemVal[1]++;
+                                        }
+
+                                        Console.SetCursorPosition(33, 25);
+                                        Console.WriteLine($"{potion.Potionname()}. 구매에 성공했습니다.");
+                                        Console.SetCursorPosition(0, 31);
+
+                                        Move = Console.ReadKey();
+
+                                    }
                                     else if(PlayerWearWeps[0] == weps.Wepitem() || PlayerWearWeps[1] == weps.Wepitem() || PlayerWearWeps[2] == weps.Wepitem())
                                     {
                                         Console.SetCursorPosition(33, 25);
@@ -7737,6 +8003,13 @@ namespace TextRpg01
                 playeritemsIndex.Add(weps.Wepitem(), weps.WepitemIndex());
             }
             else { /* Do Nothing */}
+
+            // 체력 포션 추가
+            potion = new HpPotion();
+            StoreVal.Add(potion.Potionname());
+            playeritemsIndex.Add(potion.Potionname(), potion.Potionindex());
+
+
         }
 
     } // class Games
@@ -8059,15 +8332,16 @@ namespace TextRpg01
     // 몬스터 클래스
     public class Monster
     {
-        protected string monstername;
+        protected string monstername = string.Empty;
         protected int monsterhp;
         protected int monsterdamage;
         protected int monsterdefence;
-        protected string monsteritem;
-        protected string monsteritemIndex;
+        protected string monsteritem = string.Empty;
+        protected string monsteritemIndex = string.Empty;
         protected int monstergold;
-        protected string monsterface;
-        protected string eliteskill;
+        protected string monsterface = string.Empty;
+        protected string eliteskill = string.Empty;
+        protected int monsterexp;
 
         public void MonsterAtk()
         {
@@ -8118,6 +8392,11 @@ namespace TextRpg01
             return this.eliteskill;
         }
 
+        public int Monsterexp()
+        {
+            return this.monsterexp;
+        }
+
     } // class Monster
 
     class Wolf : Monster
@@ -8132,6 +8411,7 @@ namespace TextRpg01
             this.monsteritemIndex = "회색빛이 감도는 늑대의 가죽.";
             this.monstergold = 50;
             this.monsterface = "◈▽◈";
+            this.monsterexp = 10;
         }
     }
 
@@ -8148,6 +8428,7 @@ namespace TextRpg01
             this.monstergold = 100;
             this.monsterface = "＠ㅁ＠";
             this.eliteskill = "알라우네의 분노";
+            this.monsterexp = 30;
         }
     }
 
@@ -8166,6 +8447,7 @@ namespace TextRpg01
             this.monsteritemIndex = "세월이 느껴지는 골렘의 파편.";
             this.monstergold = 100;
             this.monsterface = "▣ㅁ▣";
+            this.monsterexp = 20;
         }
     }
 
@@ -8184,6 +8466,40 @@ namespace TextRpg01
             this.monstergold = 200;
             this.monsterface = "※ㅁ※";
             this.eliteskill = "바알의 분노";
+        }
+    }
+
+
+    //! 클래스 포션
+    class Potion
+    {
+        protected string potionname = string.Empty;
+        protected string potionindex = string.Empty;
+        protected int potiongold;
+
+        public string Potionname()
+        {
+            return this.potionname;
+        }
+
+        public string Potionindex()
+        {
+            return this.potionindex;
+        }
+        public int Potiongold()
+        {
+            return this.potiongold;
+        }
+    }
+
+    //! 클래스 체력포션
+    class HpPotion : Potion
+    {
+        public HpPotion()
+        {
+            this.potionname = "체력 포션";
+            this.potionindex = "체력을 회복해주는 포션.";
+            this.potiongold = 50;
         }
     }
 
