@@ -227,7 +227,7 @@ namespace TextRpg01
                     Occupation();
                 }
 
-                // 스탯 선택 좌표 설정
+                // 스텟 선택 좌표 설정
 
                 StatusSet();
 
@@ -879,7 +879,7 @@ namespace TextRpg01
 
         } // Occupation()
 
-        // 스탯 선택 좌표 구현
+        // 스텟 선택 좌표 구현
         public void StatusSet()
         {
             if(LevelUpStatus == true)
@@ -934,7 +934,7 @@ namespace TextRpg01
 
 
 
-                    // 스탯 앞 공백 좌표
+                    // 스텟 앞 공백 좌표
 
                     if (x == 1 && y == 15)
                     {
@@ -947,14 +947,14 @@ namespace TextRpg01
                     }
 
 
-                    // 스탯 오른쪽 공백 좌표
+                    // 스텟 오른쪽 공백 좌표
                     if ((x == 3 && y == 12) || (x == 3 && y == 15) || (x == 3 && y == 18))
                     {
                         gameboard[y, x] = -5;
 
                     }
 
-                    // 남은 스탯 및 랜덤 선택 앞 공백 좌표
+                    // 남은 스텟 및 랜덤 선택 앞 공백 좌표
 
                     if ((x == 1 && y == 21) || (x == 1 && y == 24) || (x == 1 && y == 27))
                     {
@@ -962,7 +962,7 @@ namespace TextRpg01
 
                     }
 
-                    // 스탯 좌표 
+                    // 스텟 좌표 
 
                     // 힘 좌표
                     if (x == 2 && y == 12)
@@ -1006,7 +1006,7 @@ namespace TextRpg01
 
                     }
 
-                    // 남은 스탯 표기 좌표
+                    // 남은 스텟 표기 좌표
                     if (x == 2 && y == 21)
                     {
                         gameboard[y, x] = 12;
@@ -1036,7 +1036,7 @@ namespace TextRpg01
             
         } // StatusSet()
 
-        // 스탯 선택 구현 함수
+        // 스텟 선택 구현 함수
         public void Status()
         {
                        
@@ -1067,7 +1067,7 @@ namespace TextRpg01
                             Console.Write(" ".PadLeft(35, ' '));
                             break;
 
-                        // 오른쪽 스탯 화살표
+                        // 오른쪽 스텟 화살표
                         case 4:
                             Console.Write("▶".PadLeft(7, ' ') + "".PadLeft(2, ' '));
                             break;
@@ -1151,12 +1151,12 @@ namespace TextRpg01
                         case 12:
                             if (StatusValues[6] < 10)
                             {
-                                Console.Write("남은 스탯 : {0}".PadLeft(13, ' ') + "".PadRight(37, ' '), StatusValues[6]);
+                                Console.Write("남은 스텟 : {0}".PadLeft(13, ' ') + "".PadRight(37, ' '), StatusValues[6]);
 
                             }
                             else
                             {
-                                Console.Write("남은 스탯 : {0}".PadLeft(13, ' ') + "".PadRight(36, ' '), StatusValues[6]);
+                                Console.Write("남은 스텟 : {0}".PadLeft(13, ' ') + "".PadRight(36, ' '), StatusValues[6]);
                             }
                             break;
 
@@ -2929,7 +2929,7 @@ namespace TextRpg01
             DownSet3();
 
             Console.SetCursorPosition(44, 7);
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("[산]");
             Console.ForegroundColor = ConsoleColor.White;
 
@@ -2939,7 +2939,7 @@ namespace TextRpg01
             Console.ForegroundColor = ConsoleColor.White;
 
             Console.SetCursorPosition(61, 13);
-            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("[동굴]");
             Console.ForegroundColor = ConsoleColor.White;
 
@@ -6885,7 +6885,7 @@ namespace TextRpg01
                             Console.Write(" ".PadLeft(35, ' '));
                             break;
 
-                        // 오른쪽 스탯 화살표
+                        // 오른쪽 스텟 화살표
                         case 4:
                             Console.Write("▶".PadLeft(29, ' ')+"".PadRight(35, ' '));
                             break;
@@ -8036,7 +8036,7 @@ namespace TextRpg01
                             Console.Write(" ".PadLeft(35, ' '));
                             break;
 
-                        // 오른쪽 스탯 화살표
+                        // 오른쪽 스텟 화살표
                         case 4:
                             Console.Write("▶".PadLeft(29, ' ') + "".PadRight(35, ' '));
                             break;
