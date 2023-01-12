@@ -40,6 +40,9 @@ namespace TextRpg01
         public int PlayerSeaWalkCount;
 
 
+        public bool NpcVillagefirst;
+        public bool NpcVillagesecond;
+
         // 전투가 끝났는지 확인
         public bool BattleCheck = false;
 
@@ -72,9 +75,10 @@ namespace TextRpg01
         // 돈 / 체력포션 / 산 잡몹 / 산 보스 몹 / 동굴 잡몹 / 바다 보스 몹 /                     0~ 5개
         // 전사 무기 1 / 전사 갑옷 1 / 전사 장식 1 / 전사 무기 2 / 전사 갑옷 2 / 전사 장식 2 값    6~11개
         // 마법사 무기 1 / 마법사 갑옷 1 / 마법사 장식 1 / 마법사 무기 2 / 마법사 갑옷 2 / 마법사 장식 2 값    12~17개
-        // 도적 무기 1 / 도적 갑옷 1 / 도적 장식 1 / 도적 무기 2 / 도적 갑옷 2 / 도적 장식 2 값    17~22개
-
+        // 도적 무기 1 / 도적 갑옷 1 / 도적 장식 1 / 도적 무기 2 / 도적 갑옷 2 / 도적 장식 2 값    18~23개
+        // 등불   24개
         public int[] PlayeritemVal = new int[25];
+        // 아이템 설명을 담을 사전
         public Dictionary<string, string> playeritemsIndex = new Dictionary<string, string>();
 
         // 플레이어 장비 유무
@@ -255,6 +259,8 @@ namespace TextRpg01
 
                 // 첫 소지금 150 골드 지급
                 PlayeritemVal[0] = 150;
+
+
 
                 //마을, 모험, 아이템, 끝내기 선택지
                 ChoiceActSet();
@@ -1868,6 +1874,13 @@ namespace TextRpg01
                         gameboard[y, x] = -2;
 
                     }
+
+                    if((x == 1 || x == 29 )&& (1 < y && y < 24))
+                    {
+                        gameboard[y, x] = -2;
+
+                    }
+
                     if ((20 <= x && x <= 23) && y == 14 ||
                        (20 <= x && x <= 23) && y == 13)
                     {
@@ -2032,7 +2045,7 @@ namespace TextRpg01
             DownSet2();
             DownSet3();
 
-            Npctalk();
+            
 
             Console.SetCursorPosition(0, 31);
 
@@ -2069,6 +2082,11 @@ namespace TextRpg01
                         }
 
                     }
+                    // npc 대화 
+                    else if (gameboard[ArrowY - 1, ArrowX] == 4)
+                    {
+                        NpcWorking();
+                    }
                     else
                     {
                         gameboard[ArrowY, ArrowX] = -1;
@@ -2077,6 +2095,7 @@ namespace TextRpg01
                     }
 
                     break;
+
                 case ConsoleKey.A:
                     if (ArrowX == 2 || gameboard[ArrowY, ArrowX - 1] == -5)
                     {
@@ -2105,6 +2124,11 @@ namespace TextRpg01
                         ArrowX--;
                         gameboard[ArrowY, ArrowX] = 2;
 
+                    }
+                    // npc 대화 
+                    else if (gameboard[ArrowY, ArrowX - 1] == 4)
+                    {
+                        NpcWorking();
                     }
                     else
                     {
@@ -2140,6 +2164,11 @@ namespace TextRpg01
                         
                     }
                     else if (gameboard[ArrowY + 1, ArrowX] == -2 || gameboard[ArrowY + 1, ArrowX] == 20) { /* Do Nothing */ }
+                    // npc 대화 
+                    else if (gameboard[ArrowY + 1, ArrowX] == 4)
+                    {
+                        NpcWorking();
+                    }
                     else
                     {
                         gameboard[ArrowY, ArrowX] = -1;
@@ -2177,6 +2206,11 @@ namespace TextRpg01
                         gameboard[ArrowY, ArrowX] = 2;
 
                     }
+                    // npc 대화 
+                    else if (gameboard[ArrowY, ArrowX + 1] == 4)
+                    {
+                        NpcWorking();
+                    }
                     else
                     {
                         gameboard[ArrowY, ArrowX] = -1;
@@ -2184,6 +2218,8 @@ namespace TextRpg01
                         gameboard[ArrowY, ArrowX] = 2;
                     }
                     break;
+
+
                 case ConsoleKey.UpArrow:
                     if (ArrowY == 2 || gameboard[ArrowY - 1, ArrowX] == -5)
                     {
@@ -2211,6 +2247,11 @@ namespace TextRpg01
                         }
 
                     }
+                    // npc 대화 
+                    else if (gameboard[ArrowY - 1, ArrowX] == 4)
+                    {
+                        NpcWorking();
+                    }
                     else
                     {
                         gameboard[ArrowY, ArrowX] = -1;
@@ -2219,6 +2260,7 @@ namespace TextRpg01
                     }
 
                     break;
+
                 case ConsoleKey.LeftArrow:
                     if (ArrowX == 2 || gameboard[ArrowY, ArrowX - 1] == -5)
                     {
@@ -2247,6 +2289,11 @@ namespace TextRpg01
                         ArrowX--;
                         gameboard[ArrowY, ArrowX] = 2;
 
+                    }
+                    // npc 대화 
+                    else if (gameboard[ArrowY, ArrowX - 1] == 4)
+                    {
+                        NpcWorking();
                     }
                     else
                     {
@@ -2282,6 +2329,11 @@ namespace TextRpg01
 
                     }
                     else if (gameboard[ArrowY + 1, ArrowX] == -2 || gameboard[ArrowY + 1, ArrowX] == 20) { /* Do Nothing */ }
+                    // npc 대화 
+                    else if (gameboard[ArrowY + 1, ArrowX] == 4)
+                    {
+                        NpcWorking();
+                    }
                     else
                     {
                         gameboard[ArrowY, ArrowX] = -1;
@@ -2319,6 +2371,11 @@ namespace TextRpg01
                         gameboard[ArrowY, ArrowX] = 2;
 
                     }
+                    // npc 대화 
+                    else if (gameboard[ArrowY, ArrowX + 1] == 4)
+                    {
+                        NpcWorking();
+                    }
                     else
                     {
                         gameboard[ArrowY, ArrowX] = -1;
@@ -2334,6 +2391,51 @@ namespace TextRpg01
             }
 
         } // Village()
+
+        // npc 대화 조건문 함수
+        public void NpcWorking()
+        {
+            // npc 대화 
+            // NpcVillagefirst 
+            if (NpcVillagefirst == false)
+            {
+
+                Npctalk1();
+
+                NpcVillagefirst = true;
+            }
+            else if (NpcVillagesecond == false)
+            {
+                bool QuestChk = false;
+
+                for (int i = 0; i < Playeritem.Count; i++)
+                {
+                    if (Playeritem[i] == "알라우네의 보석")
+                    {
+                        QuestChk = true;
+                    }
+                    else { /* Do Nothing */ }
+
+                }
+
+                if (QuestChk == false)
+                {
+                    // 퀘스트 완료 전
+                    Npctalk2();
+                }
+                else
+                {
+                    // 퀘스트 완료 후
+                    NpctalkClear2();
+                    NpcVillagesecond = true;
+                }
+            }
+            else
+            {
+                // 끝나면 나오는 반복대사
+                Npctalkfinal();
+            }
+        }
 
         // npc 대화문 구현 함수
         public void NpctalkSet()
@@ -2372,8 +2474,10 @@ namespace TextRpg01
 
         } // NpctalkSet()
 
-        public void Npctalk()
+        // npc와의 첫 대화 함수
+        public void Npctalk1()
         {
+
             NpctalkSet();
 
             // 말하는 사람 이름
@@ -2384,7 +2488,267 @@ namespace TextRpg01
             Console.WriteLine("어허. 이 삭막한 장소에 누군가 찾아온 일은 매우 드문");
             Console.SetCursorPosition(18, 19);
             Console.WriteLine("일이구만.");
-        } // Npctalk()
+
+            ConsoleKeyInfo Move;
+
+            Console.SetCursorPosition(0, 31);
+            Move = Console.ReadKey(true);
+
+            NpctalkSet();
+
+            // 말하는 사람 이름
+            Console.SetCursorPosition(18, 16);
+            Console.WriteLine("[마을 촌장]");
+            // 대화 구현 => 출력하고 다시 테스트 나오게 할거라면 대화 한 문장이 끝나면 다시 대화문을 출력해서 덮어 씌운다.
+            Console.SetCursorPosition(18, 18);
+            Console.WriteLine("바다에 악마가 자리 잡은 이후로 다들 이 곳을 떠나버렸네.");
+            Console.SetCursorPosition(18, 19);
+            Console.WriteLine("사람이 없으니 다른 몬스터들도 자리를 잡기 시작했고,");
+            Console.SetCursorPosition(18, 20);
+            Console.WriteLine("더욱 더 삭막해졌다네.");
+
+            Console.SetCursorPosition(0, 31);
+            Move = Console.ReadKey(true);
+
+
+            NpctalkSet();
+
+            // 말하는 사람 이름
+            Console.SetCursorPosition(18, 16);
+            Console.WriteLine("[마을 촌장]");
+            // 대화 구현 => 출력하고 다시 테스트 나오게 할거라면 대화 한 문장이 끝나면 다시 대화문을 출력해서 덮어 씌운다.
+            Console.SetCursorPosition(18, 18);
+            Console.WriteLine("악마를 퇴치하고 싶어도 바다 입구는 알 수 없는 철창에");
+            Console.SetCursorPosition(18, 19);
+            Console.WriteLine("막혀있고, ");
+
+            Console.SetCursorPosition(0, 31);
+            Move = Console.ReadKey(true);
+
+
+            NpctalkSet();
+
+            // 말하는 사람 이름
+            Console.SetCursorPosition(18, 16);
+            Console.WriteLine("[마을 촌장]");
+            // 대화 구현 => 출력하고 다시 테스트 나오게 할거라면 대화 한 문장이 끝나면 다시 대화문을 출력해서 덮어 씌운다.
+            Console.SetCursorPosition(18, 18);
+            Console.WriteLine("철창을 열 수 있는 레버가 있는 동굴은 알라우네의 덩굴에");
+            Console.SetCursorPosition(18, 19);
+            Console.WriteLine("의해서 막혀버렸다네.");
+
+            Console.SetCursorPosition(0, 31);
+            Move = Console.ReadKey(true);
+
+
+            NpctalkSet();
+
+            // 말하는 사람 이름
+            Console.SetCursorPosition(18, 16);
+            Console.WriteLine("[마을 촌장]");
+            // 대화 구현 => 출력하고 다시 테스트 나오게 할거라면 대화 한 문장이 끝나면 다시 대화문을 출력해서 덮어 씌운다.
+            Console.SetCursorPosition(18, 18);
+            Console.WriteLine("......");
+            Console.SetCursorPosition(18, 19);
+            Console.WriteLine("혹시 알라우네를 잡으러 갈껜가?");
+
+            Console.SetCursorPosition(0, 31);
+            Move = Console.ReadKey(true);
+
+
+            NpctalkSet();
+
+            // 말하는 사람 이름
+            Console.SetCursorPosition(18, 16);
+            Console.WriteLine("[마을 촌장]");
+            // 대화 구현 => 출력하고 다시 테스트 나오게 할거라면 대화 한 문장이 끝나면 다시 대화문을 출력해서 덮어 씌운다.
+            Console.SetCursorPosition(18, 18);
+            Console.WriteLine("알라우네를 잡는다면 동굴 입구가 열릴 걸세.");
+            Console.SetCursorPosition(18, 19);
+            Console.WriteLine("하지만 동굴 안은 매우 어둡기 때문에 알라우네의 보석을");
+            Console.SetCursorPosition(18, 20);
+            Console.WriteLine("보여 준다면 동굴 안을 비출 등불을 주겠네!");
+            Console.SetCursorPosition(0, 31);
+            Move = Console.ReadKey(true);
+
+            NpctalkSet();
+
+            // 말하는 사람 이름
+            Console.SetCursorPosition(18, 16);
+            Console.WriteLine("[마을 촌장]");
+            // 대화 구현 => 출력하고 다시 테스트 나오게 할거라면 대화 한 문장이 끝나면 다시 대화문을 출력해서 덮어 씌운다.
+            Console.SetCursorPosition(18, 18);
+            Console.WriteLine("부디 마을을 망치는 몬스터와 악마들을 잡아주시게나.");
+            Console.SetCursorPosition(18, 21);
+            Console.WriteLine("[대화 종료]".PadLeft(52, ' '));
+            Console.SetCursorPosition(0, 31);
+            Move = Console.ReadKey(true);
+
+        } // Npctalk1()
+
+
+        // npc 첫 대화 이후 중복 대사 구현
+        public void Npctalk2()
+        {
+
+            NpctalkSet();
+
+            // 말하는 사람 이름
+            Console.SetCursorPosition(18, 16);
+            Console.WriteLine("[마을 촌장]");
+            // 대화 구현 => 출력하고 다시 테스트 나오게 할거라면 대화 한 문장이 끝나면 다시 대화문을 출력해서 덮어 씌운다.
+            Console.SetCursorPosition(18, 18);
+            Console.WriteLine("벌써 왔는가?!");
+
+            ConsoleKeyInfo Move;
+
+            Console.SetCursorPosition(0, 31);
+            Move = Console.ReadKey(true);
+
+            NpctalkSet();
+
+            // 말하는 사람 이름
+            Console.SetCursorPosition(18, 16);
+            Console.WriteLine("[마을 촌장]");
+            // 대화 구현 => 출력하고 다시 테스트 나오게 할거라면 대화 한 문장이 끝나면 다시 대화문을 출력해서 덮어 씌운다.
+            Console.SetCursorPosition(18, 18);
+            Console.WriteLine("......");
+
+            Console.SetCursorPosition(0, 31);
+            Move = Console.ReadKey(true);
+
+            NpctalkSet();
+
+            // 말하는 사람 이름
+            Console.SetCursorPosition(18, 16);
+            Console.WriteLine("[마을 촌장]");
+            // 대화 구현 => 출력하고 다시 테스트 나오게 할거라면 대화 한 문장이 끝나면 다시 대화문을 출력해서 덮어 씌운다.
+            Console.SetCursorPosition(18, 18);
+            Console.WriteLine("아직 알라우네를 쓰러트린 증거가 없네.");
+            Console.SetCursorPosition(18, 19);
+            Console.WriteLine("조금만 더 힘내 주시게나.");
+            Console.SetCursorPosition(18, 21);
+            Console.WriteLine("[대화 종료]".PadLeft(52, ' '));
+
+            Console.SetCursorPosition(0, 31);
+            Move = Console.ReadKey(true);
+
+        }
+
+        // npc 첫 대화 이후 중복 대사 구현
+        public void NpctalkClear2()
+        {
+
+            NpctalkSet();
+
+            // 말하는 사람 이름
+            Console.SetCursorPosition(18, 16);
+            Console.WriteLine("[마을 촌장]");
+            // 대화 구현 => 출력하고 다시 테스트 나오게 할거라면 대화 한 문장이 끝나면 다시 대화문을 출력해서 덮어 씌운다.
+            Console.SetCursorPosition(18, 18);
+            Console.WriteLine("벌써 왔는가?!");
+
+            ConsoleKeyInfo Move;
+
+            Console.SetCursorPosition(0, 31);
+            Move = Console.ReadKey(true);
+
+            NpctalkSet();
+
+            // 말하는 사람 이름
+            Console.SetCursorPosition(18, 16);
+            Console.WriteLine("[마을 촌장]");
+            // 대화 구현 => 출력하고 다시 테스트 나오게 할거라면 대화 한 문장이 끝나면 다시 대화문을 출력해서 덮어 씌운다.
+            Console.SetCursorPosition(18, 18);
+            Console.WriteLine("......");
+
+            Console.SetCursorPosition(0, 31);
+            Move = Console.ReadKey(true);
+
+            NpctalkSet();
+
+            // 말하는 사람 이름
+            Console.SetCursorPosition(18, 16);
+            Console.WriteLine("[마을 촌장]");
+            // 대화 구현 => 출력하고 다시 테스트 나오게 할거라면 대화 한 문장이 끝나면 다시 대화문을 출력해서 덮어 씌운다.
+            Console.SetCursorPosition(18, 18);
+            Console.WriteLine("오! 진짜 알라우네의 보석이구만!");
+            Console.SetCursorPosition(18, 19);
+            Console.WriteLine("자네라면 바다에 있는 악마도 잡을 수 있을 걸세!");
+            Console.SetCursorPosition(0, 31);
+            Move = Console.ReadKey(true);
+
+            NpctalkSet();
+
+            // 말하는 사람 이름
+            Console.SetCursorPosition(18, 16);
+            Console.WriteLine("[마을 촌장]");
+            // 대화 구현 => 출력하고 다시 테스트 나오게 할거라면 대화 한 문장이 끝나면 다시 대화문을 출력해서 덮어 씌운다.
+            Console.SetCursorPosition(18, 18);
+            Console.WriteLine("자! 이 등불을 받게나.");
+            Console.SetCursorPosition(18, 19);
+            Console.WriteLine("이 등불이 동굴 안을 좀 밝혀줄 걸세.");
+
+            Console.SetCursorPosition(0, 31);
+            Move = Console.ReadKey(true);
+
+            Playeritem.Add("오래된 등불");
+            PlayeritemVal[24]++;
+            playeritemsIndex.Add("오래된 등불", "마을 촌장이 소중하게 여긴 등불. 따뜻함이 남아있다.");
+
+            NpctalkSet();
+
+            
+            // 대화 구현 => 출력하고 다시 테스트 나오게 할거라면 대화 한 문장이 끝나면 다시 대화문을 출력해서 덮어 씌운다.
+            Console.SetCursorPosition(18, 17);
+            Console.WriteLine("[오래된 등불]을 획득했다!");
+            Console.SetCursorPosition(18, 19);
+            Console.WriteLine($"{playeritemsIndex["오래된 등불"]}");
+            Console.SetCursorPosition(18, 21);
+            Console.WriteLine("[대화 종료]".PadLeft(52, ' '));
+
+            Console.SetCursorPosition(0, 31);
+            Move = Console.ReadKey(true);
+
+        }
+
+        // npc 마지막 반복 대사
+        public void Npctalkfinal()
+        {
+            NpctalkSet();
+
+            // 말하는 사람 이름
+            Console.SetCursorPosition(18, 16);
+            Console.WriteLine("[마을 촌장]");
+            // 대화 구현 => 출력하고 다시 테스트 나오게 할거라면 대화 한 문장이 끝나면 다시 대화문을 출력해서 덮어 씌운다.
+            Console.SetCursorPosition(18, 18);
+            Console.WriteLine("자네라면 바다의 악마도 잡을 수 있을 걸세!");
+
+            Console.SetCursorPosition(0, 31);
+
+            ConsoleKeyInfo Move;
+
+            Move = Console.ReadKey(true);
+
+
+
+            NpctalkSet();
+
+            // 말하는 사람 이름
+            Console.SetCursorPosition(18, 16);
+            Console.WriteLine("[마을 촌장]");
+            // 대화 구현 => 출력하고 다시 테스트 나오게 할거라면 대화 한 문장이 끝나면 다시 대화문을 출력해서 덮어 씌운다.
+            Console.SetCursorPosition(18, 18);
+            Console.WriteLine("바다의 입구는 동굴 안의 레버를 작동하면 열린다네.");
+            Console.SetCursorPosition(18, 19);
+            Console.WriteLine("힘내시게!");
+            Console.SetCursorPosition(18, 21);
+            Console.WriteLine("[대화 종료]".PadLeft(52, ' '));
+
+            Console.SetCursorPosition(0, 31);
+            Move = Console.ReadKey(true);
+        }
+
 
         // 모험 선택 좌표 구현
         public void AdventureSet()
@@ -2401,8 +2765,19 @@ namespace TextRpg01
                         gameboard[y, x] = -2;
 
                     }
+                    if((x == 1 || x == 29) && (1 < y && y < 24))
+                    {
+                        gameboard[y, x] = -2;
 
-                    if((11 <= x && x <= 19)&&(y == 9 || y == 17) ||
+                    }
+
+                    if((y == 1 || y == 24) && (0 < x && x < 30))
+                    {
+                        gameboard[y, x] = -2;
+
+                    }
+
+                    if ((11 <= x && x <= 19)&&(y == 9 || y == 17) ||
                         (9 <= y && y <= 17)&&(x == 11 || x == 19) )
                     {
                         gameboard[y, x] = -2;
@@ -3103,7 +3478,7 @@ namespace TextRpg01
             {
                 int Chkloop = 0;
 
-                for (int y = 4 + 2; y < 17 + 2; y++)
+                for (int y = 5 + 2; y < 18 + 2; y++)
                 {
                     for (int x = 2 + Chkloop; x < 13 - Chkloop; x++)
                     {
@@ -3114,7 +3489,7 @@ namespace TextRpg01
                 }
                 Chkloop = 0;
 
-                for (int y = 4 + 2; y < 17 + 2; y++)
+                for (int y = 5 + 2; y < 18 + 2; y++)
                 {
                     for (int x = 13 + Chkloop; x < 24 - Chkloop; x++)
                     {
@@ -3126,7 +3501,7 @@ namespace TextRpg01
 
                 Chkloop = 0;
 
-                for (int y = 4 + 2; y < 17 + 2; y++)
+                for (int y = 5 + 2; y < 18 + 2; y++)
                 {
                     for (int x = 24 + Chkloop; x < 29 - Chkloop; x++)
                     {
@@ -3140,13 +3515,13 @@ namespace TextRpg01
                 {
                     for (int x = 0; x < BOARDX; x++)
                     {
-                        if ((y == 2 || y == 3 || y == 4 || y == 5) && (1 < x && x < 29))
+                        if ((y == 2 || y == 3 || y == 4 || y == 5 || y == 6) && (1 < x && x < 29))
                         {
                             gameboard[y, x] = -10;
 
                         }
 
-                        if ((y == 22 || y == 23 || y == 21 || y == 20) && (1 < x && x < 29))
+                        if ((y == 22 || y == 23 || y == 21 || y == 20 || y == 19) && (1 < x && x < 29))
                         {
                             gameboard[y, x] = -10;
 
@@ -3155,7 +3530,7 @@ namespace TextRpg01
                 }
 
                 Chkloop = 0;
-                for (int y = 19; y > 11; y--)
+                for (int y = 18; y > 10; y--)
                 {
                     for (int x = 18 + Chkloop; x < 29 - Chkloop; x++)
                     {
@@ -3166,7 +3541,7 @@ namespace TextRpg01
                 }
 
                 Chkloop = 0;
-                for (int y = 19; y > 11; y--)
+                for (int y = 18; y > 10; y--)
                 {
                     for (int x = 7 + Chkloop; x < 18 - Chkloop; x++)
                     {
@@ -3177,7 +3552,7 @@ namespace TextRpg01
                 }
 
                 Chkloop = 0;
-                for (int y = 19; y > 11; y--)
+                for (int y = 18; y > 10; y--)
                 {
                     for (int x = 2 + Chkloop; x < 7 - Chkloop; x++)
                     {
@@ -4130,48 +4505,94 @@ namespace TextRpg01
                     {
                         // 기믹 트리거
                         case 20:
-                            if (-2 <= ArrowY - y && ArrowY - y <= 2)
-                            {
-                                if (-2 <= ArrowX - x && ArrowX - x <= 2)
-                                {
-                                    Console.ForegroundColor = ConsoleColor.Yellow;
-                                    Console.Write("▣".PadRight(2, ' '));
-                                    Console.ForegroundColor = ConsoleColor.White;
 
+                            if (NpcVillagesecond == true)
+                            {
+                                if (-2 <= ArrowY - y && ArrowY - y <= 2)
+                                {
+                                    if (-2 <= ArrowX - x && ArrowX - x <= 2)
+                                    {
+                                        Console.ForegroundColor = ConsoleColor.Yellow;
+                                        Console.Write("▣".PadRight(2, ' '));
+                                        Console.ForegroundColor = ConsoleColor.White;
+
+                                    }
+                                    else
+                                    {
+                                        Console.Write(" ".PadRight(3, ' '));
+
+                                    }
                                 }
                                 else
                                 {
                                     Console.Write(" ".PadRight(3, ' '));
-
                                 }
                             }
                             else
                             {
-                                Console.Write(" ".PadRight(3, ' '));
-                            }
+                                if (-1 <= ArrowY - y && ArrowY - y <= 1)
+                                {
+                                    if (-1 <= ArrowX - x && ArrowX - x <= 1)
+                                    {
+                                        Console.ForegroundColor = ConsoleColor.Yellow;
+                                        Console.Write("▣".PadRight(2, ' '));
+                                        Console.ForegroundColor = ConsoleColor.White;
 
+                                    }
+                                    else
+                                    {
+                                        Console.Write(" ".PadRight(3, ' '));
+
+                                    }
+                                }
+                                else
+                                {
+                                    Console.Write(" ".PadRight(3, ' '));
+                                }
+                            }
 
                             break;
                         case -10:
-
-                            if(-2 <= ArrowY - y && ArrowY - y <= 2)
+                            if (NpcVillagesecond == true)
                             {
-                                if(-2<= ArrowX - x && ArrowX - x <= 2)
+                                if (-2 <= ArrowY - y && ArrowY - y <= 2)
                                 {
-                                    Console.Write("■".PadRight(2, ' '));
+                                    if (-2 <= ArrowX - x && ArrowX - x <= 2)
+                                    {
+                                        Console.Write("■".PadRight(2, ' '));
 
+                                    }
+                                    else
+                                    {
+                                        Console.Write(" ".PadRight(3, ' '));
+
+                                    }
                                 }
                                 else
                                 {
                                     Console.Write(" ".PadRight(3, ' '));
-
                                 }
                             }
                             else
                             {
-                                Console.Write(" ".PadRight(3, ' '));
-                            }
+                                if (-1 <= ArrowY - y && ArrowY - y <= 1)
+                                {
+                                    if (-1 <= ArrowX - x && ArrowX - x <= 1)
+                                    {
+                                        Console.Write("■".PadRight(2, ' '));
 
+                                    }
+                                    else
+                                    {
+                                        Console.Write(" ".PadRight(3, ' '));
+
+                                    }
+                                }
+                                else
+                                {
+                                    Console.Write(" ".PadRight(3, ' '));
+                                }
+                            }
 
                             break;
 
@@ -6601,6 +7022,11 @@ namespace TextRpg01
                         Console.Write($"{PlayeritemVal[1]}");
 
                     }
+                    else if (Playeritem[i] == "오래된 등불")
+                    {
+                        Console.Write($"{PlayeritemVal[24]}");
+
+                    }
 
 
                 }
@@ -6713,6 +7139,11 @@ namespace TextRpg01
                     else if (Playeritem[i] == "체력 포션")
                     {
                         Console.Write($"{PlayeritemVal[1]}");
+
+                    }
+                    else if (Playeritem[i] == "오래된 등불")
+                    {
+                        Console.Write($"{PlayeritemVal[24]}");
 
                     }
                     loopCount++;
@@ -7111,7 +7542,7 @@ namespace TextRpg01
 
                         if (ArrayVal < Playeritem.Count)
                         {
-                            Console.SetCursorPosition(33, 22);
+                            Console.SetCursorPosition(28, 22);
                             Console.WriteLine($"{playeritemsIndex[Playeritem[ArrayVal]]}");
 
                             Console.SetCursorPosition(0, 31);
@@ -7121,10 +7552,10 @@ namespace TextRpg01
                                 Playeritem[ArrayVal] == "정령의 지팡이" || Playeritem[ArrayVal] == "기본용 마법봉" ||
                                 Playeritem[ArrayVal] == "기본용 단검" || Playeritem[ArrayVal] == "날이 잘 갈린 단검")
                             {
-                                Console.SetCursorPosition(33, 23);
+                                Console.SetCursorPosition(28, 23);
 
                                 Console.WriteLine("장착하시겠습니까?");
-                                Console.SetCursorPosition(33, 24);
+                                Console.SetCursorPosition(28, 24);
                                 Console.WriteLine("왼쪽 입력 : 장착하기, 오른쪽 입력 : 아니요.");
 
                                 Console.SetCursorPosition(0, 31);
@@ -7138,7 +7569,7 @@ namespace TextRpg01
                                         PlayerWearWeps[0] = Playeritem[ArrayVal];
                                         Playeritem[ArrayVal] = temp;
 
-                                        Console.SetCursorPosition(33, 25);
+                                        Console.SetCursorPosition(28, 25);
                                         Console.WriteLine($"{PlayerWearWeps[0]} 장착 완료되었습니다.");
 
                                         Console.SetCursorPosition(0, 31);
@@ -7146,7 +7577,7 @@ namespace TextRpg01
                                         break;
 
                                     case ConsoleKey.D:
-                                        Console.SetCursorPosition(33, 25);
+                                        Console.SetCursorPosition(28, 25);
                                         Console.WriteLine($"장착하지 않았습니다.");
 
                                         Console.SetCursorPosition(0, 31);
@@ -7159,10 +7590,10 @@ namespace TextRpg01
                                 Playeritem[ArrayVal] == "기본용 마법복" || Playeritem[ArrayVal] == "마법 부여 복장" ||
                                 Playeritem[ArrayVal] == "기본용 트레이닝 복장" || Playeritem[ArrayVal] == "위장용 도적 복장")
                             {
-                                Console.SetCursorPosition(33, 23);
+                                Console.SetCursorPosition(28, 23);
 
                                 Console.WriteLine("장착하시겠습니까?");
-                                Console.SetCursorPosition(33, 24);
+                                Console.SetCursorPosition(28, 24);
                                 Console.WriteLine("왼쪽 입력 : 장착하기, 오른쪽 입력 : 아니요.");
 
                                 Console.SetCursorPosition(0, 31);
@@ -7176,7 +7607,7 @@ namespace TextRpg01
                                         PlayerWearWeps[1] = Playeritem[ArrayVal];
                                         Playeritem[ArrayVal] = temp;
 
-                                        Console.SetCursorPosition(33, 25);
+                                        Console.SetCursorPosition(28, 25);
                                         Console.WriteLine($"{PlayerWearWeps[1]} 장착 완료되었습니다.");
 
                                         Console.SetCursorPosition(0, 31);
@@ -7184,7 +7615,7 @@ namespace TextRpg01
                                         break;
 
                                     case ConsoleKey.D:
-                                        Console.SetCursorPosition(33, 25);
+                                        Console.SetCursorPosition(28, 25);
                                         Console.WriteLine($"장착하지 않았습니다.");
 
                                         Console.SetCursorPosition(0, 31);
@@ -7196,10 +7627,10 @@ namespace TextRpg01
                                 Playeritem[ArrayVal] == "기본용 마법사의 가호" || Playeritem[ArrayVal] == "숙련된 마법사의 가호" ||
                                 Playeritem[ArrayVal] == "기본용 도적의 가호" || Playeritem[ArrayVal] == "숙련된 도적의 가호")
                             {
-                                Console.SetCursorPosition(33, 23);
+                                Console.SetCursorPosition(28, 23);
 
                                 Console.WriteLine("장착하시겠습니까?");
-                                Console.SetCursorPosition(33, 24);
+                                Console.SetCursorPosition(28, 24);
                                 Console.WriteLine("왼쪽 입력 : 장착하기, 오른쪽 입력 : 아니요.");
 
                                 Console.SetCursorPosition(0, 31);
@@ -7213,7 +7644,7 @@ namespace TextRpg01
                                         PlayerWearWeps[2] = Playeritem[ArrayVal];
                                         Playeritem[ArrayVal] = temp;
 
-                                        Console.SetCursorPosition(33, 25);
+                                        Console.SetCursorPosition(28, 25);
                                         Console.WriteLine($"{PlayerWearWeps[2]} 장착 완료되었습니다.");
 
                                         Console.SetCursorPosition(0, 31);
@@ -7221,7 +7652,7 @@ namespace TextRpg01
                                         break;
 
                                     case ConsoleKey.D:
-                                        Console.SetCursorPosition(33, 25);
+                                        Console.SetCursorPosition(28, 25);
                                         Console.WriteLine($"장착하지 않았습니다.");
 
                                         Console.SetCursorPosition(0, 31);
@@ -7231,10 +7662,10 @@ namespace TextRpg01
                             }
                             else if (Playeritem[ArrayVal] == "체력 포션")
                             {
-                                Console.SetCursorPosition(33, 23);
+                                Console.SetCursorPosition(28, 23);
 
                                 Console.WriteLine("사용하시겠습니까?");
-                                Console.SetCursorPosition(33, 24);
+                                Console.SetCursorPosition(28, 24);
                                 Console.WriteLine("왼쪽 입력 : 사용하기, 오른쪽 입력 : 아니요.");
 
                                 Console.SetCursorPosition(0, 31);
@@ -7246,14 +7677,14 @@ namespace TextRpg01
                                         // 원래 체력 회복
                                         if (PlayerBattleVal[3] == 5)
                                         {
-                                            Console.SetCursorPosition(33, 25);
+                                            Console.SetCursorPosition(28, 25);
                                             Console.WriteLine($"이미 체력은 가득 찼습니다.");
 
                                         }
                                         else
                                         {
                                             PlayerBattleVal[3]++;
-                                            Console.SetCursorPosition(33, 25);
+                                            Console.SetCursorPosition(28, 25);
                                             Console.WriteLine("체력이 회복되었습니다.");
                                             PlayeritemVal[1]--;
 
@@ -7270,7 +7701,7 @@ namespace TextRpg01
                                         break;
 
                                     case ConsoleKey.D:
-                                        Console.SetCursorPosition(33, 25);
+                                        Console.SetCursorPosition(28, 25);
                                         Console.WriteLine($"사용하지 않았습니다.");
 
                                         Console.SetCursorPosition(0, 31);
@@ -7293,7 +7724,7 @@ namespace TextRpg01
 
                         if (ArrayVal < Playeritem.Count)
                         {
-                            Console.SetCursorPosition(33, 22);
+                            Console.SetCursorPosition(28, 22);
                             Console.WriteLine($"{playeritemsIndex[Playeritem[ArrayVal]]}");
 
                             Console.SetCursorPosition(0, 31);
@@ -7303,10 +7734,10 @@ namespace TextRpg01
                                 Playeritem[ArrayVal] == "정령의 지팡이" || Playeritem[ArrayVal] == "기본용 마법봉" ||
                                 Playeritem[ArrayVal] == "기본용 단검" || Playeritem[ArrayVal] == "날이 잘 갈린 단검")
                             {
-                                Console.SetCursorPosition(33, 23);
+                                Console.SetCursorPosition(28, 23);
 
                                 Console.WriteLine("장착하시겠습니까?");
-                                Console.SetCursorPosition(33, 24);
+                                Console.SetCursorPosition(28, 24);
                                 Console.WriteLine("왼쪽 입력 : 장착하기, 오른쪽 입력 : 아니요.");
 
                                 Console.SetCursorPosition(0, 31);
@@ -7320,7 +7751,7 @@ namespace TextRpg01
                                         PlayerWearWeps[0] = Playeritem[ArrayVal];
                                         Playeritem[ArrayVal] = temp;
 
-                                        Console.SetCursorPosition(33, 25);
+                                        Console.SetCursorPosition(28, 25);
                                         Console.WriteLine($"{PlayerWearWeps[0]} 장착 완료되었습니다.");
 
                                         Console.SetCursorPosition(0, 31);
@@ -7328,7 +7759,7 @@ namespace TextRpg01
                                         break;
 
                                     case ConsoleKey.D:
-                                        Console.SetCursorPosition(33, 25);
+                                        Console.SetCursorPosition(28, 25);
                                         Console.WriteLine($"장착하지 않았습니다.");
 
                                         Console.SetCursorPosition(0, 31);
@@ -7341,10 +7772,10 @@ namespace TextRpg01
                                 Playeritem[ArrayVal] == "기본용 마법복" || Playeritem[ArrayVal] == "마법 부여 복장" ||
                                 Playeritem[ArrayVal] == "기본용 트레이닝 복장" || Playeritem[ArrayVal] == "위장용 도적 복장")
                             {
-                                Console.SetCursorPosition(33, 23);
+                                Console.SetCursorPosition(28, 23);
 
                                 Console.WriteLine("장착하시겠습니까?");
-                                Console.SetCursorPosition(33, 24);
+                                Console.SetCursorPosition(28, 24);
                                 Console.WriteLine("왼쪽 입력 : 장착하기, 오른쪽 입력 : 아니요.");
 
                                 Console.SetCursorPosition(0, 31);
@@ -7358,7 +7789,7 @@ namespace TextRpg01
                                         PlayerWearWeps[1] = Playeritem[ArrayVal];
                                         Playeritem[ArrayVal] = temp;
 
-                                        Console.SetCursorPosition(33, 25);
+                                        Console.SetCursorPosition(28, 25);
                                         Console.WriteLine($"{PlayerWearWeps[1]} 장착 완료되었습니다.");
 
                                         Console.SetCursorPosition(0, 31);
@@ -7366,7 +7797,7 @@ namespace TextRpg01
                                         break;
 
                                     case ConsoleKey.D:
-                                        Console.SetCursorPosition(33, 25);
+                                        Console.SetCursorPosition(28, 25);
                                         Console.WriteLine($"장착하지 않았습니다.");
 
                                         Console.SetCursorPosition(0, 31);
@@ -7378,10 +7809,10 @@ namespace TextRpg01
                                 Playeritem[ArrayVal] == "기본용 마법사의 가호" || Playeritem[ArrayVal] == "숙련된 마법사의 가호" ||
                                 Playeritem[ArrayVal] == "기본용 도적의 가호" || Playeritem[ArrayVal] == "숙련된 도적의 가호")
                             {
-                                Console.SetCursorPosition(33, 23);
+                                Console.SetCursorPosition(28, 23);
 
                                 Console.WriteLine("장착하시겠습니까?");
-                                Console.SetCursorPosition(33, 24);
+                                Console.SetCursorPosition(28, 24);
                                 Console.WriteLine("왼쪽 입력 : 장착하기, 오른쪽 입력 : 아니요.");
 
                                 Console.SetCursorPosition(0, 31);
@@ -7395,7 +7826,7 @@ namespace TextRpg01
                                         PlayerWearWeps[2] = Playeritem[ArrayVal];
                                         Playeritem[ArrayVal] = temp;
 
-                                        Console.SetCursorPosition(33, 25);
+                                        Console.SetCursorPosition(28, 25);
                                         Console.WriteLine($"{PlayerWearWeps[2]} 장착 완료되었습니다.");
 
                                         Console.SetCursorPosition(0, 31);
@@ -7403,7 +7834,7 @@ namespace TextRpg01
                                         break;
 
                                     case ConsoleKey.D:
-                                        Console.SetCursorPosition(33, 25);
+                                        Console.SetCursorPosition(28, 25);
                                         Console.WriteLine($"장착하지 않았습니다.");
 
                                         Console.SetCursorPosition(0, 31);
@@ -7413,10 +7844,10 @@ namespace TextRpg01
                             }
                             else if (Playeritem[ArrayVal] == "체력 포션")
                             {
-                                Console.SetCursorPosition(33, 23);
+                                Console.SetCursorPosition(28, 23);
 
                                 Console.WriteLine("사용하시겠습니까?");
-                                Console.SetCursorPosition(33, 24);
+                                Console.SetCursorPosition(28, 24);
                                 Console.WriteLine("왼쪽 입력 : 사용하기, 오른쪽 입력 : 아니요.");
 
                                 Console.SetCursorPosition(0, 31);
@@ -7428,14 +7859,14 @@ namespace TextRpg01
                                         // 원래 체력 회복
                                         if (PlayerBattleVal[3] == 5)
                                         {
-                                            Console.SetCursorPosition(33, 25);
+                                            Console.SetCursorPosition(28, 25);
                                             Console.WriteLine($"이미 체력은 가득 찼습니다.");
 
                                         }
                                         else
                                         {
                                             PlayerBattleVal[3]++;
-                                            Console.SetCursorPosition(33, 25);
+                                            Console.SetCursorPosition(28, 25);
                                             Console.WriteLine("체력이 회복되었습니다.");
                                             PlayeritemVal[1]--;
 
@@ -7452,7 +7883,7 @@ namespace TextRpg01
                                         break;
 
                                     case ConsoleKey.D:
-                                        Console.SetCursorPosition(33, 25);
+                                        Console.SetCursorPosition(28, 25);
                                         Console.WriteLine($"사용하지 않았습니다.");
 
                                         Console.SetCursorPosition(0, 31);
@@ -7516,13 +7947,6 @@ namespace TextRpg01
 
                     }
 
-
-                    //// 제목 좌표
-                    //if (x == 1 && y == 8)
-                    //{
-                    //    gameboard[y, x] = -3;
-
-                    //}
 
                     // 왼쪽 화살표 좌표
                     if (x == 1 && y == 12)
@@ -8085,11 +8509,11 @@ namespace TextRpg01
                             else { /* Do Nothing */}
 
 
-                            Console.SetCursorPosition(33, 22);
+                            Console.SetCursorPosition(28, 22);
                             Console.WriteLine($"{playeritemsIndex[StoreVal[ArrayVal]]}");
-                            Console.SetCursorPosition(33, 23);
+                            Console.SetCursorPosition(28, 23);
                             Console.WriteLine($"구매하시겠습니까? (가격 : {weps.Wepgold()} 골드 )");
-                            Console.SetCursorPosition(33, 24);
+                            Console.SetCursorPosition(28, 24);
                             Console.WriteLine("왼쪽 입력 -> 구매, 오른쪽 입력 -> 구매 취소");
                             Console.SetCursorPosition(0, 31);
 
@@ -8112,7 +8536,7 @@ namespace TextRpg01
                                     }
                                     if (twocheck == true)
                                     {
-                                        Console.SetCursorPosition(33, 25);
+                                        Console.SetCursorPosition(28, 25);
 
                                         Console.WriteLine("이미 같은 물건을 가지고 있습니다.");
                                         Console.SetCursorPosition(0, 31);
@@ -8123,7 +8547,7 @@ namespace TextRpg01
 
                                     else if (PlayerWearWeps[0] == weps.Wepitem() || PlayerWearWeps[1] == weps.Wepitem() || PlayerWearWeps[2] == weps.Wepitem())
                                     {
-                                        Console.SetCursorPosition(33, 25);
+                                        Console.SetCursorPosition(28, 25);
 
                                         Console.WriteLine("이미 같은 물건을 가지고 있습니다.");
                                         Console.SetCursorPosition(0, 31);
@@ -8167,7 +8591,7 @@ namespace TextRpg01
                                         else { /* Do Nothing */}
 
 
-                                        Console.SetCursorPosition(33, 25);
+                                        Console.SetCursorPosition(28, 25);
                                         Console.WriteLine($"{weps.Wepitem()}. 구매에 성공했습니다.");
                                         Console.SetCursorPosition(0, 31);
 
@@ -8177,7 +8601,7 @@ namespace TextRpg01
                                     }
                                     else
                                     {
-                                        Console.SetCursorPosition(33, 25);
+                                        Console.SetCursorPosition(28, 25);
                                         Console.WriteLine("돈이 부족합니다. 구매에 실패했습니다.");
                                         Console.SetCursorPosition(0, 31);
 
@@ -8186,7 +8610,7 @@ namespace TextRpg01
                                     }
                                     break;
                                 case ConsoleKey.D:
-                                    Console.SetCursorPosition(33, 25);
+                                    Console.SetCursorPosition(28, 25);
                                     Console.WriteLine("구매를 취소했습니다.");
                                     Console.SetCursorPosition(0, 31);
 
@@ -8245,27 +8669,27 @@ namespace TextRpg01
                             }
                             else { /* Do Nothing */}
 
-                            Console.SetCursorPosition(33, 22);
+                            Console.SetCursorPosition(28, 22);
                             Console.WriteLine($"{playeritemsIndex[StoreVal[ArrayVal]]}");
 
 
                             if (potionChk == true)
                             {
 
-                                Console.SetCursorPosition(33, 23);
+                                Console.SetCursorPosition(28, 23);
                                 Console.WriteLine($"구매하시겠습니까? (가격 : {potion.Potiongold()} 골드 )");
 
                             }
                             else if (wepChk == true)
                             {
 
-                                Console.SetCursorPosition(33, 23);
+                                Console.SetCursorPosition(28, 23);
                                 Console.WriteLine($"구매하시겠습니까? (가격 : {weps.Wepgold()} 골드 )");
 
 
                             }
                             else { /* Do Nothing */ }
-                            Console.SetCursorPosition(33, 24);
+                            Console.SetCursorPosition(28, 24);
                             Console.WriteLine("왼쪽 입력 -> 구매, 오른쪽 입력 -> 구매 취소");
 
                             Console.SetCursorPosition(0, 31);
@@ -8289,7 +8713,7 @@ namespace TextRpg01
                                         }
                                         if (twocheck == true)
                                         {
-                                            Console.SetCursorPosition(33, 25);
+                                            Console.SetCursorPosition(28, 25);
 
                                             Console.WriteLine("이미 같은 물건을 가지고 있습니다.");
                                             Console.SetCursorPosition(0, 31);
@@ -8299,7 +8723,7 @@ namespace TextRpg01
                                         
                                         else if (PlayerWearWeps[0] == weps.Wepitem() || PlayerWearWeps[1] == weps.Wepitem() || PlayerWearWeps[2] == weps.Wepitem())
                                         {
-                                            Console.SetCursorPosition(33, 25);
+                                            Console.SetCursorPosition(28, 25);
 
                                             Console.WriteLine("이미 같은 물건을 가지고 있습니다.");
                                             Console.SetCursorPosition(0, 31);
@@ -8326,7 +8750,7 @@ namespace TextRpg01
                                             }
                                             else { /* Do Nothing */}
 
-                                            Console.SetCursorPosition(33, 25);
+                                            Console.SetCursorPosition(28, 25);
                                             Console.WriteLine($"{weps.Wepitem()}. 구매에 성공했습니다.");
                                             Console.SetCursorPosition(0, 31);
 
@@ -8336,7 +8760,7 @@ namespace TextRpg01
                                         }
                                         else
                                         {
-                                            Console.SetCursorPosition(33, 25);
+                                            Console.SetCursorPosition(28, 25);
                                             Console.WriteLine("돈이 부족합니다. 구매에 실패했습니다.");
                                             Console.SetCursorPosition(0, 31);
 
@@ -8374,7 +8798,7 @@ namespace TextRpg01
                                                 PlayeritemVal[1]++;
                                             }
 
-                                            Console.SetCursorPosition(33, 25);
+                                            Console.SetCursorPosition(28, 25);
                                             Console.WriteLine($"{potion.Potionname()}. 구매에 성공했습니다.");
                                             Console.SetCursorPosition(0, 31);
 
@@ -8383,7 +8807,7 @@ namespace TextRpg01
                                         }
                                         else
                                         {
-                                            Console.SetCursorPosition(33, 25);
+                                            Console.SetCursorPosition(28, 25);
                                             Console.WriteLine("돈이 부족합니다. 구매에 실패했습니다.");
                                             Console.SetCursorPosition(0, 31);
 
@@ -8394,7 +8818,7 @@ namespace TextRpg01
                                     }
                                     break;
                                 case ConsoleKey.D:
-                                    Console.SetCursorPosition(33, 25);
+                                    Console.SetCursorPosition(28, 25);
                                     Console.WriteLine("구매를 취소했습니다.");
                                     Console.SetCursorPosition(0, 31);
 
