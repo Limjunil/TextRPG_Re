@@ -240,22 +240,7 @@ namespace TextRpg01
 
                 PlayerBattleVal[0] = 5;
 
-                if (PlayerOccupation == "전사")
-                {
-                    PlayerBattleVal[1] = (StatusValues[0] + (int)((StatusValues[2] + StatusValues[4]) / 2));
-                    PlayerBattleVal[2] = (StatusValues[1] + (int)((StatusValues[3] + StatusValues[5]) / 2));
-                }
-                else if (PlayerOccupation == "마법사")
-                {
-                    PlayerBattleVal[1] = (StatusValues[2] + (int)((StatusValues[0] + StatusValues[4]) / 2));
-                    PlayerBattleVal[2] = (StatusValues[3] + (int)((StatusValues[1] + StatusValues[5]) / 2));
-                }
-                else if (PlayerOccupation == "도적")
-                {
-                    PlayerBattleVal[1] = (StatusValues[4] + (int)((StatusValues[0] + StatusValues[2]) / 2));
-                    PlayerBattleVal[2] = (StatusValues[5] + (int)((StatusValues[1] + StatusValues[3]) / 2));
-                }
-                else { /* Do Nothing */ }
+                StatusPlus();
 
                 // 첫 소지금 150 골드 지급
                 PlayeritemVal[0] = 150;
@@ -287,6 +272,29 @@ namespace TextRpg01
 
 
         } // GamePlay()
+
+
+        // 스텟 추가될때마다 값 재정의 하는 함수
+        public void StatusPlus()
+        {
+            if (PlayerOccupation == "전사")
+            {
+                PlayerBattleVal[1] = (StatusValues[0] + (int)((StatusValues[2] + StatusValues[4]) / 2));
+                PlayerBattleVal[2] = (StatusValues[1] + (int)((StatusValues[3] + StatusValues[5]) / 2));
+            }
+            else if (PlayerOccupation == "마법사")
+            {
+                PlayerBattleVal[1] = (StatusValues[2] + (int)((StatusValues[0] + StatusValues[4]) / 2));
+                PlayerBattleVal[2] = (StatusValues[3] + (int)((StatusValues[1] + StatusValues[5]) / 2));
+            }
+            else if (PlayerOccupation == "도적")
+            {
+                PlayerBattleVal[1] = (StatusValues[4] + (int)((StatusValues[0] + StatusValues[2]) / 2));
+                PlayerBattleVal[2] = (StatusValues[5] + (int)((StatusValues[1] + StatusValues[3]) / 2));
+            }
+            else { /* Do Nothing */ }
+        }
+
 
         // 게임 종료 구현 함수
         public void GameEndSet()
@@ -3226,7 +3234,9 @@ namespace TextRpg01
                 {
                     if(gamemonsterboard[y,x] == 10)
                     {
+
                         gameboard[y, x] = 10;
+                        
                     }
                 }
             }
@@ -3240,6 +3250,7 @@ namespace TextRpg01
             {
                 for (int x = 0; x < BOARDX; x++)
                 {
+                    
                     gamemonsterboard[y, x] = 0;
                 }
             }
@@ -5794,8 +5805,6 @@ namespace TextRpg01
 
             }
 
-
-
         } // AdventureTree()
 
 
@@ -6073,6 +6082,7 @@ namespace TextRpg01
                     Console.SetCursorPosition(0, 0);
                     Status();
                 }
+                StatusPlus();
                 LevelUpStatus = false;
             }
             else { /* Do Nothing */ }
